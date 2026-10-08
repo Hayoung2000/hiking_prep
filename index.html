@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>등산 준비 & 출발시간 계산기</title>
+<style>
+:root{--bg:#f4f7f2;--card:#fff;--text:#1f2a24;--muted:#66736b;--green:#2f6f4e;--line:#dfe7e1;--warn:#fff4dd;--err:#fff0f0}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Noto Sans KR",sans-serif}
+main{max-width:720px;margin:auto;padding:18px 14px 36px}h1{font-size:30px;margin:6px 0 8px}p{line-height:1.55}.sub,.help{color:var(--muted)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:17px;margin-top:14px;box-shadow:0 8px 28px rgba(37,61,47,.07)}
+h2{font-size:18px;margin:0 0 14px}.levels,.results{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+button{font:inherit;cursor:pointer}.level{border:1px solid var(--line);background:#fff;border-radius:13px;padding:12px 6px;font-weight:800}.level.active,.primary{background:var(--green);color:#fff;border-color:var(--green)}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.full{grid-column:1/-1}label{display:block;font-size:13px;font-weight:800;margin-bottom:6px}
+input{width:100%;min-height:46px;border:1px solid #ccd7cf;border-radius:12px;padding:11px 12px;font:inherit}
+.help{font-size:12px;margin:5px 0 0}.primary{width:100%;border:0;border-radius:13px;padding:13px;margin-top:14px;font-weight:850}
+.box{background:#f8faf8;border:1px solid var(--line);border-radius:13px;padding:12px}.box small{display:block;color:var(--muted)}.box strong{font-size:18px}.box em{display:block;font-style:normal;color:var(--muted);font-size:11px;margin-top:4px}
+.msg{display:none;padding:11px 12px;border-radius:12px;margin-top:12px;font-size:13px}.msg.ok{display:block;background:#edf8f0}.msg.warn{display:block;background:var(--warn)}.msg.err{display:block;background:var(--err);color:#9d2929}
+.progress{height:9px;background:#e6ece8;border-radius:999px;overflow:hidden;margin:8px 0 13px}.bar{height:100%;width:0;background:var(--green)}
+.item{display:flex;gap:10px;border:1px solid var(--line);border-radius:12px;padding:10px 11px;margin:8px 0;align-items:flex-start}.item input{width:20px;min-height:20px;height:20px;margin:1px 0 0;accent-color:var(--green)}.item span{font-size:14px}
+.tools{display:flex;gap:8px;margin-top:12px}.secondary{flex:1;border:1px solid var(--line);background:#fff;border-radius:11px;padding:10px;font-weight:750}
+footer{text-align:center;color:var(--muted);font-size:12px;margin-top:20px}
+@media(max-width:520px){h1{font-size:26px}.grid,.results{grid-template-columns:1fr}.full{grid-column:auto}.level{font-size:13px}}
+</style>
+</head>
+<body>
+<main>
+<header>
+<h1>🥾 등산 준비 계산기</h1>
+<p class="sub">산행 난이도별 준비물을 확인하고 목표 정상 도착시각에서 출발시각과 등산 완료 예상시각을 계산합니다.</p>
+</header>
+
+<section class="card">
+<h2>1. 산행 난이도</h2>
+<div class="levels">
+<button class="level active" data-level="low">저난이도</button>
+<button class="level" data-level="mid">중난이도</button>
+<button class="level" data-level="high">고난이도</button>
+</div>
+<p class="help" id="levelNote"></p>
+</section>
+
+<section class="card">
+<h2>2. 산행 시간 입력</h2>
+<div class="grid">
+<div class="full"><label for="date">산행 날짜</label><input id="date" type="date"></div>
+<div class="full"><label for="summit">목표 정상 도착시각</label><input id="summit" type="time" value="12:00"></div>
+<div><label for="travel">집 → 등산로 입구</label><input id="travel" type="number" min="0" max="1440" step="1" value="60"><p class="help">분 단위</p></div>
+<div><label for="up">등산로 입구 → 정상</label><input id="up" type="number" min="1" max="1440" step="1" value="90"><p class="help">분 단위</p></div>
+<div><label for="stay">정상 체류</label><input id="stay" type="number" min="0" max="600" step="1" value="20"><p class="help">분 단위</p></div>
+<div><label for="down">정상 → 등산 완료</label><input id="down" type="number" min="1" max="1440" step="1" value="70"><p class="help">분 단위</p></div>
+<div class="full"><label for="buffer">출발 여유시간</label><input id="buffer" type="number" min="0" max="300" step="1" value="15"><p class="help">교통 지연·화장실·장비 점검 등을 위한 여유시간</p></div>
+</div>
+<button class="primary" id="calc">시간 계산하기</button>
+<div class="msg" id="inputMsg" aria-live="polite"></div>
+</section>
+
+<section class="card">
+<h2>3. 예상 일정</h2>
+<div class="results">
+<div class="box"><small>집 출발</small><strong id="departT">--:--</strong><em id="departD">-</em></div>
+<div class="box"><small>정상 도착</small><strong id="summitT">--:--</strong><em id="summitD">-</em></div>
+<div class="box"><small>등산 완료</small><strong id="finishT">--:--</strong><em id="finishD">-</em></div>
+</div>
+<div class="msg" id="dayMsg"></div>
+</section>
+
+<section class="card">
+<h2>4. 준비물 체크리스트</h2>
+<div style="display:flex;justify-content:space-between;font-size:13px"><span>준비 진행률</span><strong id="count">0 / 0</strong></div>
+<div class="progress"><div class="bar" id="bar"></div></div>
+<div id="list"></div>
+<div class="tools"><button class="secondary" id="all">전체 체크</button><button class="secondary" id="reset">초기화</button></div>
+</section>
+
+<footer>입력값은 브라우저에서만 처리되며 외부 통신·로그인·민감정보 수집이 없습니다. 실제 산행 전에는 날씨, 일몰, 입산 통제와 탐방로 상태를 별도로 확인하세요.</footer>
+</main>
+
+<script>
+const LEVELS={
+ low:{note:"정비된 탐방로 중심의 비교적 짧은 산행",up:90,down:70,buffer:15,items:["등산화 또는 미끄럼 방지 운동화","물","간단한 간식","휴대전화","보조배터리","모자 또는 선캡","자외선 차단제","얇은 겉옷","휴지·물티슈","작은 쓰레기봉투"]},
+ mid:{note:"수 시간 이상, 경사·돌길·계단 구간이 있는 산행",up:180,down:140,buffer:30,items:["등산화","물 1L 이상","행동식·간식","식사 또는 충분한 대체식","휴대전화","보조배터리","등산 스틱","모자","자외선 차단제","방풍·방수 재킷","여벌 양말","기본 구급용품","헤드랜턴","쓰레기봉투"]},
+ high:{note:"장시간·급경사·험로·큰 일교차를 고려하는 산행",up:300,down:240,buffer:45,items:["접지력 좋은 등산화","충분한 물","전해질 음료 또는 보충제","고열량 행동식","식사","휴대전화","대용량 보조배터리","등산 스틱","헤드랜턴","예비 건전지 또는 충전 수단","방수·방풍 재킷","보온 레이어","여벌 양말","장갑","모자 또는 보온모","기본 구급용품","비상 보온포","호루라기","등산용 지도 또는 오프라인 경로","쓰레기봉투"]}
+};
+let level="low";
+const $=id=>document.getElementById(id);
+const fields={date:$("date"),summit:$("summit"),travel:$("travel"),up:$("up"),stay:$("stay"),down:$("down"),buffer:$("buffer")};
+
+function today(){
+ const d=new Date(),y=d.getFullYear(),m=String(d.getMonth()+1).padStart(2,"0"),day=String(d.getDate()).padStart(2,"0");
+ return `${y}-${m}-${day}`;
+}
+fields.date.value=today();
+
+function renderLevel(apply=true){
+ const x=LEVELS[level]; $("levelNote").textContent=x.note;
+ if(apply){fields.up.value=x.up;fields.down.value=x.down;fields.buffer.value=x.buffer}
+ $("list").innerHTML=x.items.map((v,i)=>`<label class="item"><input type="checkbox" data-i="${i}"><span>${v}</span></label>`).join("");
+ document.querySelectorAll("#list input").forEach(x=>x.addEventListener("change",progress));
+ progress();
+}
+function progress(){
+ const xs=[...document.querySelectorAll("#list input")],n=xs.filter(x=>x.checked).length;
+ $("count").textContent=`${n} / ${xs.length}`; $("bar").style.width=(xs.length?Math.round(n/xs.length*100):0)+"%";
+}
+function mins(el,label,min,max){
+ const s=el.value.trim(),v=Number(s);
+ if(s==="") throw new Error(label+"을(를) 입력해 주세요.");
+ if(!Number.isInteger(v)) throw new Error(label+"은(는) 정수 분 단위로 입력해 주세요.");
+ if(v<min||v>max) throw new Error(label+`은(는) ${min}~${max}분 범위로 입력해 주세요.`);
+ return v;
+}
+function dt(date,time){
+ if(!date) throw new Error("산행 날짜를 선택해 주세요.");
+ if(!/^\d{2}:\d{2}$/.test(time)) throw new Error("올바른 정상 도착시각을 입력해 주세요.");
+ const [y,m,d]=date.split("-").map(Number),[h,mi]=time.split(":").map(Number);
+ const x=new Date(y,m-1,d,h,mi,0,0);
+ if(x.getFullYear()!=y||x.getMonth()!=m-1||x.getDate()!=d||x.getHours()!=h||x.getMinutes()!=mi) throw new Error("날짜 또는 시각 입력값을 확인해 주세요.");
+ return x;
+}
+const add=(d,m)=>new Date(d.getTime()+m*60000);
+const t=d=>new Intl.DateTimeFormat("ko-KR",{hour:"2-digit",minute:"2-digit",hour12:false}).format(d);
+const day=d=>new Intl.DateTimeFormat("ko-KR",{month:"long",day:"numeric",weekday:"short"}).format(d);
+const same=(a,b)=>a.getFullYear()==b.getFullYear()&&a.getMonth()==b.getMonth()&&a.getDate()==b.getDate();
+
+function calculate(){
+ try{
+  const travel=mins(fields.travel,"이동시간",0,1440),up=mins(fields.up,"등산시간",1,1440),stay=mins(fields.stay,"정상 체류시간",0,600),down=mins(fields.down,"하산시간",1,1440),buffer=mins(fields.buffer,"여유시간",0,300);
+  const summit=dt(fields.date.value,fields.summit.value),depart=add(summit,-(travel+up+buffer)),finish=add(summit,stay+down);
+  $("departT").textContent=t(depart);$("departD").textContent=day(depart);
+  $("summitT").textContent=t(summit);$("summitD").textContent=day(summit);
+  $("finishT").textContent=t(finish);$("finishD").textContent=day(finish);
+  $("inputMsg").className="msg ok";$("inputMsg").textContent="계산이 완료되었습니다.";
+  if(!same(depart,summit)&&depart<summit){$("dayMsg").className="msg warn";$("dayMsg").textContent=`⚠️ 집 출발시각이 산행일 전날입니다. ${day(depart)} ${t(depart)}에 출발해야 합니다.`;}
+  else{$("dayMsg").className="msg ok";$("dayMsg").textContent=`✓ 산행일 당일 ${t(depart)}에 집에서 출발하면 됩니다.`;}
+ }catch(e){
+  $("inputMsg").className="msg err";$("inputMsg").textContent="입력 오류: "+e.message;$("dayMsg").className="msg";
+  ["departT","summitT","finishT"].forEach(id=>$(id).textContent="--:--");["departD","summitD","finishD"].forEach(id=>$(id).textContent="-");
+ }
+}
+document.querySelectorAll(".level").forEach(b=>b.addEventListener("click",()=>{
+ document.querySelectorAll(".level").forEach(x=>x.classList.remove("active"));b.classList.add("active");level=b.dataset.level;renderLevel(true);calculate();
+}));
+$("calc").addEventListener("click",calculate);
+$("all").addEventListener("click",()=>{document.querySelectorAll("#list input").forEach(x=>x.checked=true);progress()});
+$("reset").addEventListener("click",()=>{document.querySelectorAll("#list input").forEach(x=>x.checked=false);progress()});
+Object.values(fields).forEach(x=>x.addEventListener("change",calculate));
+renderLevel(true);calculate();
+</script>
+</body>
+</html>
