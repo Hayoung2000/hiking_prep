@@ -1,0 +1,637 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#315a4b">
+<title>우리 가족 돌봄 보드</title>
+<style>
+:root{
+  --bg:#f5f7f5;--card:#fff;--text:#1f2a25;--muted:#68746d;
+  --green:#315a4b;--green2:#244639;--soft:#edf5f1;--line:#dce5df;
+  --warn:#fff5df;--warnText:#77520b;--danger:#fff0f0;--dangerText:#9b2929;
+  --shadow:0 8px 28px rgba(36,70,57,.07);--radius:18px
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Noto Sans KR","Segoe UI",sans-serif}
+main{max-width:860px;margin:auto;padding:18px 14px 42px}
+header{padding:6px 4px 10px}
+h1{font-size:clamp(27px,7vw,36px);letter-spacing:-.045em;margin:4px 0 8px}
+h2{font-size:19px;letter-spacing:-.03em;margin:0 0 14px}
+h3{font-size:15px;margin:0}
+p{line-height:1.6}
+.sub,.help,.muted{color:var(--muted)}
+.sub{margin:0;font-size:14px}
+.banner{background:#eef5f1;border:1px solid #d2e2d9;border-radius:14px;padding:11px 13px;margin-top:12px;font-size:13px;line-height:1.55}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:18px;margin-top:14px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.full{grid-column:1/-1}
+label.field{display:block;font-size:13px;font-weight:800;margin-bottom:6px}
+input,select,textarea{width:100%;border:1px solid #cdd8d1;border-radius:12px;background:#fff;color:var(--text);font:inherit;padding:11px 12px}
+input,select{min-height:46px}
+textarea{min-height:90px;resize:vertical}
+input:focus,select:focus,textarea:focus{outline:3px solid rgba(49,90,75,.12);border-color:var(--green)}
+.help{font-size:12px;margin:5px 0 0}
+.section-note{font-size:12px;color:var(--muted);margin:-5px 0 12px}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{border:1px solid var(--line);background:#fff;border-radius:999px;padding:9px 12px;font-weight:750;font-size:13px;color:var(--text)}
+.chip.active{background:var(--green);border-color:var(--green);color:#fff}
+.status-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+.status-box{border:1px solid var(--line);border-radius:14px;padding:12px;background:#fff}
+.status-box strong{display:block;font-size:13px;margin-bottom:8px}
+.toggle-list{display:grid;gap:7px}
+.toggle{display:flex;align-items:flex-start;gap:9px;border:1px solid var(--line);border-radius:12px;padding:10px 11px;font-size:13px;cursor:pointer}
+.toggle input{width:19px;height:19px;min-height:19px;margin:0;accent-color:var(--green);flex:0 0 auto}
+.primary{width:100%;border:0;border-radius:13px;padding:14px 16px;background:var(--green);color:#fff;font:inherit;font-weight:850;cursor:pointer;margin-top:14px}
+.primary:hover{background:var(--green2)}
+.secondary{border:1px solid var(--line);background:#fff;color:var(--text);border-radius:11px;padding:10px 12px;font:inherit;font-weight:750;cursor:pointer}
+.secondary:hover{background:#f8faf8}
+.danger-btn{border:1px solid #e7caca;background:#fff7f7;color:#8e3030;border-radius:11px;padding:10px 12px;font:inherit;font-weight:750;cursor:pointer}
+.msg{display:none;margin-top:12px;padding:11px 13px;border-radius:12px;font-size:13px;line-height:1.55}
+.msg.show{display:block}.msg.ok{background:var(--soft)}.msg.err{background:var(--danger);color:var(--dangerText)}
+.summary-strip{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px}
+.stat{background:#f8faf8;border:1px solid var(--line);border-radius:13px;padding:12px}
+.stat small{display:block;color:var(--muted);margin-bottom:4px}.stat strong{font-size:19px}
+.progress{height:9px;background:#e7ece9;border-radius:999px;overflow:hidden;margin:8px 0 14px}
+.bar{height:100%;background:var(--green);width:0%;transition:width .2s}
+.toolbar{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0 12px}
+.toolbar select{width:auto;min-width:120px;flex:1}
+.task-list{display:grid;gap:9px}
+.task{border:1px solid var(--line);border-radius:14px;padding:12px;background:#fff}
+.task.done{opacity:.62;background:#fafbfa}
+.task-main{display:flex;gap:10px;align-items:flex-start}
+.task-main input[type=checkbox]{width:21px;height:21px;min-height:21px;margin:1px 0 0;accent-color:var(--green);flex:0 0 auto}
+.task-title{font-weight:800;font-size:14px;line-height:1.5}
+.task.done .task-title{text-decoration:line-through}
+.task-meta{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0 0 31px}
+.tag{font-size:11px;border-radius:999px;padding:4px 7px;background:#f1f4f2;color:#57645d}
+.tag.med{background:#eef3fb;color:#405d85}.tag.custom{background:#fff2df;color:#805715}.tag.safety{background:#fff0f0;color:#923939}
+.task-controls{display:grid;grid-template-columns:1fr 1fr auto;gap:7px;margin:9px 0 0 31px}
+.task-controls select{min-height:36px;padding:7px 8px;font-size:12px}
+.icon-btn{border:1px solid var(--line);background:#fff;border-radius:9px;padding:7px 9px;font-size:12px;cursor:pointer}
+.empty{text-align:center;color:var(--muted);border:1px dashed var(--line);border-radius:13px;padding:24px 10px}
+.add-box{background:#fafcfb;border:1px solid var(--line);border-radius:14px;padding:13px;margin-top:13px}
+.add-grid{display:grid;grid-template-columns:2fr 1fr 1fr;gap:8px}
+.add-grid .secondary{min-height:46px}
+.handoff-box{background:#f8faf8;border:1px solid var(--line);border-radius:14px;padding:13px;white-space:pre-wrap;font-size:13px;line-height:1.65;min-height:100px}
+.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.alert-card{border-color:#ead7b2;background:#fffdf8}
+.alert-title{display:flex;align-items:center;gap:8px;color:#714e0c}
+.alert-list{margin:10px 0 0;padding-left:21px;font-size:13px;line-height:1.7}
+.disclaimer{font-size:12px;color:var(--muted);line-height:1.65;margin:12px 0 0}
+footer{text-align:center;color:var(--muted);font-size:12px;line-height:1.6;padding:22px 5px 0}
+@media(max-width:650px){
+  .grid,.status-grid,.summary-strip,.add-grid,.task-controls{grid-template-columns:1fr}
+  .full{grid-column:auto}
+  .task-controls{margin-left:31px}
+}
+@media print{
+  body{background:#fff}.primary,.secondary,.danger-btn,.toolbar,.add-box,.actions,.chip,#privacyBanner{display:none!important}
+  main{max-width:none;padding:0}.card{box-shadow:none;break-inside:avoid}
+}
+</style>
+</head>
+<body>
+<main>
+<header>
+  <h1>🤝 우리 가족 돌봄 보드</h1>
+  <p class="sub">가족이 함께 돌볼 때 필요한 일을 빠뜨리지 않도록 건강상태와 질환에 맞춘 공동 체크리스트를 만듭니다.</p>
+  <div class="banner" id="privacyBanner">
+    🔒 <strong>이 앱은 입력 내용을 서버로 보내거나 저장하지 않습니다.</strong>
+    브라우저 안에서만 처리되며 새로고침하면 입력 내용과 체크 상태가 사라집니다.
+  </div>
+</header>
+
+<section class="card">
+  <h2>1. 돌봄 대상과 기본 상황</h2>
+  <div class="grid">
+    <div>
+      <label class="field" for="relation">돌봄 대상</label>
+      <select id="relation">
+        <option value="">선택</option>
+        <option>엄마</option><option>아빠</option><option>할머니</option><option>할아버지</option>
+        <option>배우자</option><option>형제·자매</option><option>자녀</option><option>기타 가족</option>
+      </select>
+    </div>
+    <div>
+      <label class="field" for="ageGroup">연령대</label>
+      <select id="ageGroup">
+        <option value="">선택 안 함</option>
+        <option>18세 미만</option><option>18~39세</option><option>40~64세</option>
+        <option>65~74세</option><option>75~84세</option><option>85세 이상</option>
+      </select>
+    </div>
+  </div>
+  <p class="help">실명, 주민번호, 주소 같은 개인정보는 입력하지 않도록 설계했습니다.</p>
+</section>
+
+<section class="card">
+  <h2>2. 현재 건강·기능 상태 체크</h2>
+  <p class="section-note">진단이 아니라, 가족이 오늘 돌봄에서 무엇을 챙길지 정하기 위한 기능 상태 체크입니다.</p>
+
+  <div class="status-grid">
+    <div class="status-box">
+      <strong>이동·일상생활</strong>
+      <label class="field" for="mobility">이동 수준</label>
+      <select id="mobility">
+        <option value="independent">대체로 독립적</option>
+        <option value="assist">이동 시 도움 필요</option>
+        <option value="bed">대부분 침상·휠체어 생활</option>
+      </select>
+    </div>
+
+    <div class="status-box">
+      <strong>인지·의사소통</strong>
+      <label class="field" for="cognition">현재 상태</label>
+      <select id="cognition">
+        <option value="normal">대체로 문제 없음</option>
+        <option value="mild">건망·혼동이 가끔 있음</option>
+        <option value="high">혼동·의사소통 도움 필요</option>
+      </select>
+    </div>
+
+    <div class="status-box">
+      <strong>식사·삼킴</strong>
+      <label class="field" for="eating">현재 상태</label>
+      <select id="eating">
+        <option value="normal">대체로 문제 없음</option>
+        <option value="poor">식욕 저하·섭취량 감소</option>
+        <option value="swallow">삼킴 문제 또는 식사 보조 필요</option>
+      </select>
+    </div>
+
+    <div class="status-box">
+      <strong>배변·배뇨</strong>
+      <label class="field" for="toileting">현재 상태</label>
+      <select id="toileting">
+        <option value="independent">대체로 독립적</option>
+        <option value="assist">화장실 이용 도움 필요</option>
+        <option value="incontinence">실금·기저귀 관리 필요</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="toggle-list" style="margin-top:12px">
+    <label class="toggle"><input id="medSupport" type="checkbox"><span><strong>약 관리 도움이 필요함</strong><br><span class="muted">복약시간 확인, 약통 정리, 처방 변경 확인 등이 필요</span></span></label>
+    <label class="toggle"><input id="fallRisk" type="checkbox"><span><strong>낙상 위험이 있음</strong><br><span class="muted">최근 넘어짐, 보행 불안정, 어지럼, 보조기 사용 등</span></span></label>
+    <label class="toggle"><input id="skinRisk" type="checkbox"><span><strong>피부·상처 관리가 필요함</strong><br><span class="muted">욕창 위험, 상처, 피부 발적, 기저귀 피부 문제 등</span></span></label>
+    <label class="toggle"><input id="moodRisk" type="checkbox"><span><strong>기분·수면 변화 관찰이 필요함</strong><br><span class="muted">우울감, 불안, 수면 변화, 의욕 저하 등</span></span></label>
+    <label class="toggle"><input id="recentDischarge" type="checkbox"><span><strong>최근 퇴원했거나 치료계획이 바뀜</strong><br><span class="muted">새 처방, 외래 일정, 재활·식이 지시 등을 가족끼리 공유할 필요</span></span></label>
+  </div>
+</section>
+
+<section class="card">
+  <h2>3. 질환 선택</h2>
+  <p class="section-note">여러 개를 동시에 선택할 수 있습니다. 선택한 질환에 따라 관리 체크리스트가 추가됩니다.</p>
+
+  <div class="chips" id="conditionChips">
+    <button type="button" class="chip" data-condition="고혈압">고혈압</button>
+    <button type="button" class="chip" data-condition="당뇨병">당뇨병</button>
+    <button type="button" class="chip" data-condition="치매">치매</button>
+    <button type="button" class="chip" data-condition="뇌졸중">뇌졸중</button>
+    <button type="button" class="chip" data-condition="심장질환">심장질환</button>
+    <button type="button" class="chip" data-condition="COPD·천식">COPD·천식</button>
+    <button type="button" class="chip" data-condition="만성콩팥병">만성콩팥병</button>
+    <button type="button" class="chip" data-condition="암">암 치료 중</button>
+    <button type="button" class="chip" data-condition="관절·골다공증">관절·골다공증</button>
+    <button type="button" class="chip" data-condition="파킨슨병">파킨슨병</button>
+    <button type="button" class="chip" data-condition="우울·불안">우울·불안</button>
+  </div>
+
+  <div style="margin-top:13px">
+    <label class="field" for="customConditions">그 밖의 질환 또는 상태</label>
+    <input id="customConditions" type="text" placeholder="예: 고지혈증, 백내장, 척추질환 (쉼표로 구분)">
+    <p class="help">직접 입력한 질환은 공통 돌봄 항목과 함께 표시됩니다. 알려진 키워드가 포함되면 관련 항목도 자동 반영합니다.</p>
+  </div>
+
+  <button type="button" class="primary" id="generateBtn">공동 돌봄 체크리스트 만들기</button>
+  <div class="msg" id="generateMsg" aria-live="polite"></div>
+</section>
+
+<section class="card" id="taskSection">
+  <h2>4. 공동 돌봄 체크리스트</h2>
+
+  <div class="summary-strip">
+    <div class="stat"><small>전체 할 일</small><strong id="totalTasks">0</strong></div>
+    <div class="stat"><small>완료</small><strong id="doneTasks">0</strong></div>
+    <div class="stat"><small>남은 일</small><strong id="remainingTasks">0</strong></div>
+  </div>
+  <div class="progress"><div class="bar" id="progressBar"></div></div>
+
+  <div class="toolbar">
+    <select id="filterOwner" aria-label="담당자 필터">
+      <option value="all">담당자 전체</option>
+      <option value="미정">미정</option><option value="나">나</option><option value="가족 A">가족 A</option>
+      <option value="가족 B">가족 B</option><option value="가족 C">가족 C</option><option value="모두">모두</option>
+    </select>
+    <select id="filterCategory" aria-label="영역 필터">
+      <option value="all">영역 전체</option>
+      <option>오늘 확인</option><option>약·치료</option><option>식사·수분</option><option>안전</option>
+      <option>활동·재활</option><option>기록·진료</option><option>정서·인지</option><option>사용자 추가</option>
+    </select>
+    <button class="secondary" type="button" id="showIncomplete">미완료만 보기</button>
+  </div>
+
+  <div id="taskList" class="task-list">
+    <div class="empty">건강상태와 질환을 입력한 뒤 체크리스트를 만들어 주세요.</div>
+  </div>
+
+  <div class="add-box">
+    <h3>➕ 우리 가족만의 할 일 추가</h3>
+    <div class="add-grid" style="margin-top:9px">
+      <input id="customTaskText" type="text" placeholder="예: 오후 7시에 저녁 약 확인">
+      <select id="customTaskFrequency">
+        <option>오늘</option><option>매일</option><option>주 1회</option><option>필요 시</option><option>진료 전</option>
+      </select>
+      <select id="customTaskOwner">
+        <option>미정</option><option>나</option><option>가족 A</option><option>가족 B</option><option>가족 C</option><option>모두</option>
+      </select>
+    </div>
+    <button class="secondary" style="width:100%;margin-top:8px" type="button" id="addTaskBtn">할 일 추가</button>
+    <div class="msg" id="addMsg"></div>
+  </div>
+</section>
+
+<section class="card">
+  <h2>5. 오늘의 인수인계</h2>
+  <label class="field" for="handoffNote">가족에게 남길 메모</label>
+  <textarea id="handoffNote" placeholder="예: 점심 식사량이 평소보다 적었음. 오후에는 보행 시 조금 어지럽다고 함."></textarea>
+  <p class="help">이 메모 역시 브라우저 안에서만 유지되며 새로고침하면 사라집니다.</p>
+
+  <div class="handoff-box" id="handoffSummary">체크리스트를 만들면 인수인계 요약이 여기에 표시됩니다.</div>
+  <div class="actions">
+    <button class="secondary" type="button" id="refreshSummary">요약 새로고침</button>
+    <button class="secondary" type="button" id="copySummary">요약 복사</button>
+    <button class="secondary" type="button" id="printBtn">인쇄</button>
+    <button class="danger-btn" type="button" id="resetAll">전체 초기화</button>
+  </div>
+  <div class="msg" id="copyMsg"></div>
+</section>
+
+<section class="card alert-card">
+  <h2 class="alert-title">⚠️ 즉시 의료 도움을 고려해야 하는 상황</h2>
+  <p class="section-note">아래는 질환과 관계없이 중요한 일반적 경고 신호입니다.</p>
+  <ul class="alert-list">
+    <li>갑작스러운 한쪽 마비·얼굴 처짐·말이 어눌해지는 등 뇌졸중 의심 증상</li>
+    <li>심한 흉통, 갑작스럽거나 심한 호흡곤란, 입술이 파래지는 증상</li>
+    <li>의식 저하, 경련, 깨우기 어려움 또는 갑작스러운 심한 혼동</li>
+    <li>멈추지 않는 심한 출혈, 큰 낙상·머리 부상 후 이상 증상</li>
+    <li>의료진이 미리 안내한 응급 기준에 해당하는 증상</li>
+  </ul>
+  <p class="disclaimer"><strong>응급상황이라 판단되면 119 또는 응급의료기관을 이용하세요.</strong> 이 앱은 진단·처방을 제공하지 않으며 의료진의 개별 지시를 대신하지 않습니다.</p>
+</section>
+
+<footer>
+  체크리스트 설계는 만성질환·재활·낙상 관리와 가족 돌봄에서 일반적으로 중요한 원칙을 바탕으로 구성했습니다.
+  약 복용법, 혈압·혈당 목표, 식이·수분 제한, 운동량 등은 개인별 의료진 지시가 우선입니다.
+</footer>
+</main>
+
+<script>
+const $=id=>document.getElementById(id);
+const OWNER_OPTIONS=["미정","나","가족 A","가족 B","가족 C","모두"];
+const FREQ_OPTIONS=["오늘","매일","아침·저녁","주 1회","필요 시","진료 전","진료 후"];
+
+let selectedConditions=new Set();
+let tasks=[];
+let incompleteOnly=false;
+let nextId=1;
+
+const COMMON=[
+  ["오늘 확인","오늘 평소와 다른 증상·통증·기운 저하·식사량 변화를 확인하기","오늘","모두","general"],
+  ["약·치료","처방약이 있다면 복용 여부를 확인하고 임의로 중단·변경하지 않기","매일","미정","medical"],
+  ["식사·수분","식사량과 수분 섭취가 평소와 크게 달라지지 않았는지 확인하기","매일","미정","general"],
+  ["안전","집 안 이동 동선의 미끄럼·문턱·어두운 조명 등 위험요소 확인하기","주 1회","모두","safety"],
+  ["기록·진료","다음 외래·검사·처방 갱신 일정이 있는지 가족끼리 확인하기","주 1회","미정","medical"]
+];
+
+const CONDITION_TASKS={
+"고혈압":[
+  ["약·치료","의료진이 권한 방식과 시기에 따라 혈압을 측정·기록하기","필요 시","미정","medical"],
+  ["약·치료","혈압약 복용 여부와 어지럼·부종 등 새 증상 여부 확인하기","매일","미정","medical"],
+  ["식사·수분","짠 음식 섭취가 과하지 않았는지 확인하고 식사 계획 공유하기","매일","모두","medical"]
+],
+"당뇨병":[
+  ["약·치료","의료진이 지시한 경우 혈당을 측정하고 기록하기","필요 시","미정","medical"],
+  ["약·치료","당뇨약·인슐린 일정과 식사 시간이 어긋나지 않았는지 확인하기","매일","미정","medical"],
+  ["오늘 확인","발의 상처·물집·붉어짐 등 피부 변화를 살펴보기","매일","미정","medical"],
+  ["식사·수분","식사량이 평소와 크게 달라졌다면 담당 가족에게 공유하기","매일","모두","general"]
+],
+"치매":[
+  ["정서·인지","날짜·시간·오늘 일정 등을 편안하게 안내하고 익숙한 일상 유지하기","매일","미정","medical"],
+  ["안전","가스·전열기구·문 잠금·배회 위험 등 생활환경 안전 확인하기","매일","모두","safety"],
+  ["정서·인지","갑작스러운 혼동·행동 변화가 평소와 다른지 관찰하고 기록하기","매일","미정","medical"],
+  ["식사·수분","식사·수분 섭취를 잊지 않았는지 확인하기","매일","미정","general"]
+],
+"뇌졸중":[
+  ["활동·재활","재활치료사·의료진이 안내한 운동·보행 연습을 안전하게 수행하기","매일","미정","medical"],
+  ["안전","보행·이동 시 마비측과 균형 상태를 확인하고 낙상을 예방하기","매일","미정","safety"],
+  ["식사·수분","삼킴 문제가 있다면 의료진이 정한 식사 자세·식이 형태를 지키기","매일","미정","medical"],
+  ["오늘 확인","새로운 마비·말 어눌함·얼굴 처짐이 생기면 즉시 응급대응하기","필요 시","모두","safety"]
+],
+"심장질환":[
+  ["오늘 확인","평소보다 숨참·흉통·부종·기운 저하가 심해졌는지 확인하기","매일","미정","medical"],
+  ["약·치료","심장 관련 처방약 복용 여부 확인하기","매일","미정","medical"],
+  ["기록·진료","의료진이 체중·맥박·혈압 기록을 지시했다면 같은 조건에서 기록하기","필요 시","미정","medical"]
+],
+"COPD·천식":[
+  ["약·치료","처방받은 흡입기 사용 여부와 사용법이 맞는지 확인하기","매일","미정","medical"],
+  ["오늘 확인","평소보다 숨참·기침·가래가 악화되었는지 확인하기","매일","미정","medical"],
+  ["안전","담배 연기·미세먼지·강한 냄새 등 호흡기 자극 요인 노출 줄이기","매일","모두","safety"],
+  ["기록·진료","의료진이 정한 악화 시 행동계획과 비상약 위치를 가족끼리 공유하기","주 1회","모두","medical"]
+],
+"만성콩팥병":[
+  ["약·치료","처방약 복용 여부와 새로 추가된 약·건강보조제 사용 여부를 가족끼리 확인하기","매일","미정","medical"],
+  ["식사·수분","염분·단백질·수분 제한이 있다면 의료진·영양사의 개인별 지시를 따르기","매일","모두","medical"],
+  ["오늘 확인","부종·숨참·소변량의 큰 변화 등 평소와 다른 상태를 확인하기","매일","미정","medical"],
+  ["기록·진료","검사일과 신장기능·전해질 관련 추적 진료 일정을 확인하기","진료 전","미정","medical"]
+],
+"암":[
+  ["오늘 확인","통증·발열·구토·설사·식사량 등 치료 후 증상 변화를 기록하기","매일","미정","medical"],
+  ["약·치료","항암치료·보조약 일정과 처방 변경사항을 가족끼리 확인하기","매일","모두","medical"],
+  ["식사·수분","섭취가 어려운 날에는 먹고 마신 양을 확인하고 지속되는 문제를 의료진에게 알리기","매일","미정","medical"],
+  ["기록·진료","다음 치료·검사 일정과 의료진이 안내한 감염 주의사항 확인하기","진료 전","미정","medical"]
+],
+"관절·골다공증":[
+  ["안전","미끄러운 바닥·러그·문턱을 정리하고 야간 조명을 확인하기","주 1회","모두","safety"],
+  ["활동·재활","의료진이 권한 범위에서 걷기·근력·균형 운동을 돕기","매일","미정","medical"],
+  ["오늘 확인","통증 정도와 일상 동작이 평소보다 어려운지 확인하기","매일","미정","general"]
+],
+"파킨슨병":[
+  ["약·치료","파킨슨 약의 정해진 복용 시간을 확인하기","매일","미정","medical"],
+  ["안전","보행 동결·균형 저하가 있는 시간대에 이동 보조와 낙상 예방하기","매일","미정","safety"],
+  ["식사·수분","삼킴·침흘림·변비 등 변화가 있는지 관찰하기","매일","미정","medical"],
+  ["활동·재활","의료진·치료사가 안내한 운동과 스트레칭을 돕기","매일","미정","medical"]
+],
+"우울·불안":[
+  ["정서·인지","기분·불안·수면·식욕 변화가 평소보다 심해졌는지 편안하게 확인하기","매일","미정","medical"],
+  ["정서·인지","짧은 대화·산책·익숙한 활동 등 부담 없는 일상 참여를 제안하기","매일","미정","general"],
+  ["안전","자해·자살 생각을 말하거나 즉각적 위험이 의심되면 혼자 두지 말고 긴급 도움을 요청하기","필요 시","모두","safety"]
+]
+};
+
+function task(category,text,freq="매일",owner="미정",source="general"){
+  return {id:nextId++,category,text,freq,owner,source,done:false};
+}
+
+document.querySelectorAll(".chip").forEach(btn=>{
+  btn.addEventListener("click",()=>{
+    const c=btn.dataset.condition;
+    if(selectedConditions.has(c)){selectedConditions.delete(c);btn.classList.remove("active")}
+    else{selectedConditions.add(c);btn.classList.add("active")}
+  });
+});
+
+function addUnique(arr,t){
+  if(!arr.some(x=>x.text===t.text)) arr.push(t);
+}
+
+function buildTasks(){
+  const relation=$("relation").value;
+  if(!relation){
+    showMsg("generateMsg","돌봄 대상을 먼저 선택해 주세요.","err");
+    $("relation").focus();
+    return;
+  }
+
+  nextId=1;
+  let list=[];
+  COMMON.forEach(x=>addUnique(list,task(...x)));
+
+  if($("medSupport").checked)
+    addUnique(list,task("약·치료","약 복용 시간표·약통·남은 약을 확인하고 변경된 처방이 가족에게 공유됐는지 확인하기","매일","미정","medical"));
+
+  if($("fallRisk").checked || $("mobility").value!=="independent"){
+    addUnique(list,task("안전","침대·의자에서 일어나거나 화장실 이동 시 필요한 도움을 제공하기","매일","미정","safety"));
+    addUnique(list,task("안전","보행보조기·안경·미끄럼 방지 신발 등 필요한 보조도구가 가까이 있는지 확인하기","매일","미정","safety"));
+  }
+
+  if($("mobility").value==="bed"){
+    addUnique(list,task("활동·재활","같은 자세로 오래 있지 않도록 체위·피부 상태를 주기적으로 확인하기","매일","미정","medical"));
+  }
+
+  if($("cognition").value!=="normal"){
+    addUnique(list,task("정서·인지","오늘 일정과 담당 가족을 짧고 반복적으로 안내하고 갑작스러운 혼동 변화를 관찰하기","매일","모두","general"));
+  }
+
+  if($("eating").value==="poor"){
+    addUnique(list,task("식사·수분","오늘 식사·간식·수분 섭취량이 평소보다 감소했는지 기록하기","매일","미정","general"));
+  }
+
+  if($("eating").value==="swallow"){
+    addUnique(list,task("식사·수분","식사 중 사레·기침·목소리 변화 등 삼킴 문제를 관찰하고 의료진이 정한 식사 지침 따르기","매일","미정","medical"));
+  }
+
+  if($("toileting").value!=="independent"){
+    addUnique(list,task("오늘 확인","배변·배뇨 패턴 변화와 화장실 이용에 필요한 도움을 확인하기","매일","미정","general"));
+  }
+
+  if($("toileting").value==="incontinence" || $("skinRisk").checked){
+    addUnique(list,task("오늘 확인","피부 발적·상처·습기·압박 부위를 확인하고 이상이 있으면 공유하기","매일","미정","medical"));
+  }
+
+  if($("moodRisk").checked){
+    addUnique(list,task("정서·인지","오늘 기분·불안·수면·활동 의욕의 변화를 짧게 기록하기","매일","미정","general"));
+  }
+
+  if($("recentDischarge").checked){
+    addUnique(list,task("기록·진료","퇴원요약·새 처방·외래 일정·재활·식이 지시를 가족끼리 한 번에 확인하기","오늘","모두","medical"));
+    addUnique(list,task("약·치료","퇴원 전후 약 목록이 달라졌는지 확인하고 중복·누락이 의심되면 의료기관 또는 약국에 문의하기","오늘","모두","medical"));
+  }
+
+  [...selectedConditions].forEach(c=>{
+    (CONDITION_TASKS[c]||[]).forEach(x=>addUnique(list,task(...x)));
+  });
+
+  const custom=$("customConditions").value.trim();
+  if(custom){
+    const chunks=custom.split(",").map(x=>x.trim()).filter(Boolean);
+    chunks.forEach(c=>{
+      addUnique(list,task("기록·진료","'"+c+"' 관련 의료진 지시·약·다음 진료 일정을 가족끼리 확인하기","주 1회","미정","medical"));
+    });
+
+    const joined=custom.toLowerCase();
+    const keywordMap=[
+      [["혈압"],"고혈압"],[["당뇨","혈당"],"당뇨병"],[["치매","알츠하이머"],"치매"],
+      [["뇌졸중","뇌경색","뇌출혈"],"뇌졸중"],[["심부전","협심증","심근경색","심장"],"심장질환"],
+      [["copd","천식","폐기종"],"COPD·천식"],[["콩팥","신장","신부전"],"만성콩팥병"],
+      [["암","항암"],"암"],[["골다공증","관절염"],"관절·골다공증"],[["파킨슨"],"파킨슨병"],[["우울","불안"],"우울·불안"]
+    ];
+    keywordMap.forEach(([keys,c])=>{
+      if(keys.some(k=>joined.includes(k))){
+        (CONDITION_TASKS[c]||[]).forEach(x=>addUnique(list,task(...x)));
+      }
+    });
+  }
+
+  tasks=list;
+  showMsg("generateMsg",tasks.length+"개의 할 일을 만들었습니다. 담당자를 나눠서 배정해 보세요.","ok");
+  renderTasks();
+  updateHandoff();
+  $("taskSection").scrollIntoView({behavior:"smooth",block:"start"});
+}
+
+function showMsg(id,text,type){
+  const el=$(id);el.textContent=text;el.className="msg show "+type;
+}
+
+function renderTasks(){
+  const ownerFilter=$("filterOwner").value;
+  const catFilter=$("filterCategory").value;
+
+  const visible=tasks.filter(t=>{
+    if(ownerFilter!=="all"&&t.owner!==ownerFilter)return false;
+    if(catFilter!=="all"&&t.category!==catFilter)return false;
+    if(incompleteOnly&&t.done)return false;
+    return true;
+  });
+
+  if(!visible.length){
+    $("taskList").innerHTML='<div class="empty">'+(tasks.length?"현재 필터에 해당하는 할 일이 없습니다.":"체크리스트를 만들어 주세요.")+'</div>';
+  }else{
+    $("taskList").innerHTML=visible.map(t=>`
+      <article class="task ${t.done?"done":""}" data-id="${t.id}">
+        <div class="task-main">
+          <input type="checkbox" class="task-check" ${t.done?"checked":""} aria-label="완료 체크">
+          <div class="task-title">${escapeHtml(t.text)}</div>
+        </div>
+        <div class="task-meta">
+          <span class="tag ${t.source==="medical"?"med":t.source==="custom"?"custom":t.source==="safety"?"safety":""}">${escapeHtml(t.category)}</span>
+          <span class="tag">${escapeHtml(t.freq)}</span>
+          <span class="tag">담당: ${escapeHtml(t.owner)}</span>
+        </div>
+        <div class="task-controls">
+          <select class="owner-select" aria-label="담당자">${OWNER_OPTIONS.map(x=>`<option ${x===t.owner?"selected":""}>${x}</option>`).join("")}</select>
+          <select class="freq-select" aria-label="빈도">${FREQ_OPTIONS.map(x=>`<option ${x===t.freq?"selected":""}>${x}</option>`).join("")}</select>
+          <button class="icon-btn delete-task" type="button">삭제</button>
+        </div>
+      </article>`).join("");
+
+    document.querySelectorAll(".task").forEach(card=>{
+      const id=Number(card.dataset.id);
+      const item=tasks.find(x=>x.id===id);
+      card.querySelector(".task-check").addEventListener("change",e=>{
+        item.done=e.target.checked;renderTasks();updateHandoff();
+      });
+      card.querySelector(".owner-select").addEventListener("change",e=>{
+        item.owner=e.target.value;renderTasks();updateHandoff();
+      });
+      card.querySelector(".freq-select").addEventListener("change",e=>{
+        item.freq=e.target.value;renderTasks();updateHandoff();
+      });
+      card.querySelector(".delete-task").addEventListener("click",()=>{
+        tasks=tasks.filter(x=>x.id!==id);renderTasks();updateHandoff();
+      });
+    });
+  }
+
+  const done=tasks.filter(x=>x.done).length;
+  $("totalTasks").textContent=tasks.length;
+  $("doneTasks").textContent=done;
+  $("remainingTasks").textContent=tasks.length-done;
+  $("progressBar").style.width=(tasks.length?Math.round(done/tasks.length*100):0)+"%";
+}
+
+function escapeHtml(v){
+  return String(v).replace(/[&<>"']/g,s=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[s]));
+}
+
+function addCustomTask(){
+  const text=$("customTaskText").value.trim();
+  if(!text){showMsg("addMsg","추가할 할 일을 입력해 주세요.","err");return}
+  tasks.push(task("사용자 추가",text,$("customTaskFrequency").value,$("customTaskOwner").value,"custom"));
+  $("customTaskText").value="";
+  showMsg("addMsg","할 일을 추가했습니다.","ok");
+  renderTasks();updateHandoff();
+}
+
+function updateHandoff(){
+  if(!tasks.length){
+    $("handoffSummary").textContent="체크리스트를 만들면 인수인계 요약이 여기에 표시됩니다.";
+    return;
+  }
+  const relation=$("relation").value||"가족";
+  const conditions=[...selectedConditions];
+  const custom=$("customConditions").value.trim();
+  const done=tasks.filter(x=>x.done).length;
+  const remaining=tasks.filter(x=>!x.done);
+  const note=$("handoffNote").value.trim();
+
+  const byOwner={};
+  remaining.forEach(t=>{
+    (byOwner[t.owner]??=[]).push(t.text);
+  });
+
+  let lines=[];
+  lines.push("[" + relation + " 돌봄 인수인계]");
+  if(conditions.length) lines.push("선택 질환: "+conditions.join(", "));
+  if(custom) lines.push("추가 상태: "+custom);
+  lines.push("진행: "+done+"/"+tasks.length+" 완료");
+  lines.push("");
+  lines.push("남은 할 일");
+  if(!remaining.length) lines.push("- 현재 체크리스트 모두 완료");
+  else{
+    Object.entries(byOwner).forEach(([owner,items])=>{
+      lines.push("• "+owner);
+      items.slice(0,8).forEach(x=>lines.push("  - "+x));
+      if(items.length>8)lines.push("  - 외 "+(items.length-8)+"개");
+    });
+  }
+  if(note){
+    lines.push("");
+    lines.push("메모");
+    lines.push(note);
+  }
+  lines.push("");
+  lines.push("※ 약·식이·수분·운동 등 개별 치료계획은 의료진 지시 우선.");
+  $("handoffSummary").textContent=lines.join("\n");
+}
+
+async function copySummary(){
+  updateHandoff();
+  const text=$("handoffSummary").textContent;
+  try{
+    await navigator.clipboard.writeText(text);
+    showMsg("copyMsg","인수인계 요약을 복사했습니다.","ok");
+  }catch(e){
+    showMsg("copyMsg","브라우저에서 자동 복사가 허용되지 않았습니다. 요약 내용을 길게 눌러 직접 복사해 주세요.","err");
+  }
+}
+
+function resetAll(){
+  if(!confirm("입력 내용과 체크리스트를 모두 초기화할까요?"))return;
+  selectedConditions.clear();
+  document.querySelectorAll(".chip").forEach(x=>x.classList.remove("active"));
+  $("relation").value="";$("ageGroup").value="";
+  $("mobility").value="independent";$("cognition").value="normal";$("eating").value="normal";$("toileting").value="independent";
+  ["medSupport","fallRisk","skinRisk","moodRisk","recentDischarge"].forEach(id=>$(id).checked=false);
+  $("customConditions").value="";$("handoffNote").value="";
+  tasks=[];nextId=1;incompleteOnly=false;
+  $("showIncomplete").textContent="미완료만 보기";
+  $("generateMsg").className="msg";$("addMsg").className="msg";$("copyMsg").className="msg";
+  renderTasks();updateHandoff();
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+
+$("generateBtn").addEventListener("click",buildTasks);
+$("addTaskBtn").addEventListener("click",addCustomTask);
+$("customTaskText").addEventListener("keydown",e=>{if(e.key==="Enter")addCustomTask()});
+$("filterOwner").addEventListener("change",renderTasks);
+$("filterCategory").addEventListener("change",renderTasks);
+$("showIncomplete").addEventListener("click",()=>{
+  incompleteOnly=!incompleteOnly;
+  $("showIncomplete").textContent=incompleteOnly?"전체 보기":"미완료만 보기";
+  renderTasks();
+});
+$("refreshSummary").addEventListener("click",updateHandoff);
+$("handoffNote").addEventListener("input",updateHandoff);
+$("copySummary").addEventListener("click",copySummary);
+$("printBtn").addEventListener("click",()=>window.print());
+$("resetAll").addEventListener("click",resetAll);
+
+renderTasks();
+updateHandoff();
+</script>
+</body>
+</html>
