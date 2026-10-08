@@ -3,55 +3,63 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>등산 준비 & 출발시간 계산기</title>
+<meta name="theme-color" content="#2f6f4e">
+<title>등산 준비 & 전국 명산 가이드</title>
 <style>
-:root{--bg:#f4f7f2;--card:#fff;--text:#1f2a24;--muted:#66736b;--green:#2f6f4e;--line:#dfe7e1;--warn:#fff4dd;--err:#fff0f0}
-*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Noto Sans KR",sans-serif}
-main{max-width:720px;margin:auto;padding:18px 14px 36px}h1{font-size:30px;margin:6px 0 8px}p{line-height:1.55}.sub,.help{color:var(--muted)}
+:root{--bg:#f4f7f2;--card:#fff;--text:#1f2a24;--muted:#66736b;--green:#2f6f4e;--green2:#245a3f;--line:#dfe7e1;--soft:#f8faf8;--warn:#fff4dd;--err:#fff0f0;--ok:#edf8f0}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Noto Sans KR","Segoe UI",sans-serif}
+main{max-width:820px;margin:auto;padding:18px 14px 40px}header{padding:5px 3px 12px}h1{font-size:30px;letter-spacing:-.04em;margin:4px 0 8px}h2{font-size:18px;letter-spacing:-.03em;margin:0 0 14px}p{line-height:1.6}.sub,.help,.muted{color:var(--muted)}
 .card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:17px;margin-top:14px;box-shadow:0 8px 28px rgba(37,61,47,.07)}
-h2{font-size:18px;margin:0 0 14px}.levels,.results{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
-button{font:inherit;cursor:pointer}.level{border:1px solid var(--line);background:#fff;border-radius:13px;padding:12px 6px;font-weight:800}.level.active,.primary{background:var(--green);color:#fff;border-color:var(--green)}
-.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.full{grid-column:1/-1}label{display:block;font-size:13px;font-weight:800;margin-bottom:6px}
-input{width:100%;min-height:46px;border:1px solid #ccd7cf;border-radius:12px;padding:11px 12px;font:inherit}
-.help{font-size:12px;margin:5px 0 0}.primary{width:100%;border:0;border-radius:13px;padding:13px;margin-top:14px;font-weight:850}
-.box{background:#f8faf8;border:1px solid var(--line);border-radius:13px;padding:12px}.box small{display:block;color:var(--muted)}.box strong{font-size:18px}.box em{display:block;font-style:normal;color:var(--muted);font-size:11px;margin-top:4px}
-.msg{display:none;padding:11px 12px;border-radius:12px;margin-top:12px;font-size:13px}.msg.ok{display:block;background:#edf8f0}.msg.warn{display:block;background:var(--warn)}.msg.err{display:block;background:var(--err);color:#9d2929}
-.progress{height:9px;background:#e6ece8;border-radius:999px;overflow:hidden;margin:8px 0 13px}.bar{height:100%;width:0;background:var(--green)}
-.item{display:flex;gap:10px;border:1px solid var(--line);border-radius:12px;padding:10px 11px;margin:8px 0;align-items:flex-start}.item input{width:20px;min-height:20px;height:20px;margin:1px 0 0;accent-color:var(--green)}.item span{font-size:14px}
-.tools{display:flex;gap:8px;margin-top:12px}.secondary{flex:1;border:1px solid var(--line);background:#fff;border-radius:11px;padding:10px;font-weight:750}
-footer{text-align:center;color:var(--muted);font-size:12px;margin-top:20px}
-@media(max-width:520px){h1{font-size:26px}.grid,.results{grid-template-columns:1fr}.full{grid-column:auto}.level{font-size:13px}}
+.levels{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.level{border:1px solid var(--line);background:#fff;border-radius:13px;padding:12px 6px;font-weight:800;color:var(--text)}.level.active,.primary{background:var(--green);color:#fff;border-color:var(--green)}
+button{font:inherit;cursor:pointer}.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.full{grid-column:1/-1}
+label.field-label{display:block;font-size:13px;font-weight:800;margin-bottom:6px}input,select{width:100%;min-height:46px;border:1px solid #ccd7cf;border-radius:12px;padding:11px 12px;font:inherit;background:#fff;color:var(--text)}
+input:focus,select:focus{outline:3px solid rgba(47,111,78,.13);border-color:var(--green)}.help{font-size:12px;margin:5px 0 0}
+.primary{width:100%;border:0;border-radius:13px;padding:13px;margin-top:14px;font-weight:850}.primary:hover{background:var(--green2)}
+.results{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.box{background:var(--soft);border:1px solid var(--line);border-radius:13px;padding:12px}.box small{display:block;color:var(--muted)}.box strong{font-size:18px}.box em{display:block;font-style:normal;color:var(--muted);font-size:11px;margin-top:4px}
+.msg{display:none;padding:11px 12px;border-radius:12px;margin-top:12px;font-size:13px;line-height:1.55}.msg.ok{display:block;background:var(--ok)}.msg.warn{display:block;background:var(--warn)}.msg.err{display:block;background:var(--err);color:#9d2929}
+.selected{display:none;background:#eef7f1;border:1px solid #cfe2d5;border-radius:14px;padding:12px 13px;margin:12px 0}.selected.show{display:flex;align-items:center;justify-content:space-between;gap:12px}.selected strong{display:block}.selected span{font-size:12px;color:var(--muted)}.mini-btn{border:1px solid var(--line);background:#fff;border-radius:10px;padding:8px 10px;font-weight:700;white-space:nowrap}
+.progress{height:9px;background:#e6ece8;border-radius:999px;overflow:hidden;margin:8px 0 13px}.bar{height:100%;width:0;background:var(--green);transition:width .2s}.item{display:flex;gap:10px;border:1px solid var(--line);border-radius:12px;padding:10px 11px;margin:8px 0;align-items:flex-start}.item input{width:20px;min-height:20px;height:20px;margin:1px 0 0;accent-color:var(--green)}.item span{font-size:14px}.tools{display:flex;gap:8px;margin-top:12px}.secondary{flex:1;border:1px solid var(--line);background:#fff;border-radius:11px;padding:10px;font-weight:750;color:var(--text)}
+.mountain-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}.badge{display:inline-flex;align-items:center;border-radius:999px;background:#eef7f1;color:#245a3f;padding:6px 9px;font-size:12px;font-weight:800}
+.filters{display:grid;grid-template-columns:2fr 1fr 1fr;gap:8px;margin-top:12px}.filters2{display:grid;grid-template-columns:1fr auto;gap:8px;margin-top:8px}
+.catalog-meta{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:14px 0 8px;font-size:13px}.mountain-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.mountain{border:1px solid var(--line);border-radius:15px;padding:13px;background:#fff;display:flex;flex-direction:column;min-height:168px}.mountain-top{display:flex;align-items:flex-start;justify-content:space-between;gap:8px}.mountain h3{font-size:17px;margin:0;letter-spacing:-.03em}.height{font-size:12px;font-weight:850;color:var(--green);white-space:nowrap;background:#eef7f1;padding:5px 7px;border-radius:999px}.place{font-size:12px;color:var(--muted);line-height:1.5;margin:8px 0 7px}.mountain-tags{display:flex;gap:5px;flex-wrap:wrap;margin-top:auto}.tag{font-size:11px;background:#f3f5f3;border-radius:999px;padding:4px 7px;color:#58655e}.choose{width:100%;margin-top:10px;border:1px solid #cfe2d5;background:#f5fbf7;color:#245a3f;border-radius:10px;padding:8px;font-weight:800}.choose:hover{background:#eaf6ee}
+.empty{padding:28px 10px;text-align:center;color:var(--muted);border:1px dashed var(--line);border-radius:14px;grid-column:1/-1}.loadmore{width:100%;margin-top:12px;border:1px solid var(--line);background:#fff;border-radius:12px;padding:11px;font-weight:800}.source-note{font-size:12px;color:var(--muted);line-height:1.6;margin:14px 0 0}
+footer{text-align:center;color:var(--muted);font-size:12px;line-height:1.6;margin-top:22px;padding:0 6px}
+@media(max-width:620px){h1{font-size:26px}.grid,.results,.mountain-grid{grid-template-columns:1fr}.full{grid-column:auto}.filters{grid-template-columns:1fr}.filters2{grid-template-columns:1fr}.level{font-size:13px}.selected.show{align-items:flex-start}.mountain{min-height:auto}}
 </style>
 </head>
 <body>
 <main>
 <header>
-<h1>🥾 등산 준비 계산기</h1>
-<p class="sub">산행 난이도별 준비물을 확인하고 목표 정상 도착시각에서 출발시각과 등산 완료 예상시각을 계산합니다.</p>
+<h1>🥾 등산 준비 & 전국 명산 가이드</h1>
+<p class="sub">산행 난이도별 준비물을 확인하고 출발시각을 계산하세요. 아래에서는 산림청 100대 명산을 권역·고도·이름으로 찾아볼 수 있습니다.</p>
 </header>
 
 <section class="card">
 <h2>1. 산행 난이도</h2>
 <div class="levels">
-<button class="level active" data-level="low">저난이도</button>
-<button class="level" data-level="mid">중난이도</button>
-<button class="level" data-level="high">고난이도</button>
+<button class="level active" data-level="low" type="button">저난이도</button>
+<button class="level" data-level="mid" type="button">중난이도</button>
+<button class="level" data-level="high" type="button">고난이도</button>
 </div>
 <p class="help" id="levelNote"></p>
+<div class="selected" id="selectedMountain">
+<div><strong id="selectedName"></strong><span id="selectedMeta"></span></div>
+<button class="mini-btn" id="clearMountain" type="button">선택 해제</button>
+</div>
 </section>
 
-<section class="card">
+<section class="card" id="planner">
 <h2>2. 산행 시간 입력</h2>
 <div class="grid">
-<div class="full"><label for="date">산행 날짜</label><input id="date" type="date"></div>
-<div class="full"><label for="summit">목표 정상 도착시각</label><input id="summit" type="time" value="12:00"></div>
-<div><label for="travel">집 → 등산로 입구</label><input id="travel" type="number" min="0" max="1440" step="1" value="60"><p class="help">분 단위</p></div>
-<div><label for="up">등산로 입구 → 정상</label><input id="up" type="number" min="1" max="1440" step="1" value="90"><p class="help">분 단위</p></div>
-<div><label for="stay">정상 체류</label><input id="stay" type="number" min="0" max="600" step="1" value="20"><p class="help">분 단위</p></div>
-<div><label for="down">정상 → 등산 완료</label><input id="down" type="number" min="1" max="1440" step="1" value="70"><p class="help">분 단위</p></div>
-<div class="full"><label for="buffer">출발 여유시간</label><input id="buffer" type="number" min="0" max="300" step="1" value="15"><p class="help">교통 지연·화장실·장비 점검 등을 위한 여유시간</p></div>
+<div class="full"><label class="field-label" for="date">산행 날짜</label><input id="date" type="date"></div>
+<div class="full"><label class="field-label" for="summit">목표 정상 도착시각</label><input id="summit" type="time" value="12:00"></div>
+<div><label class="field-label" for="travel">집 → 등산로 입구</label><input id="travel" type="number" min="0" max="1440" step="1" value="60"><p class="help">분 단위</p></div>
+<div><label class="field-label" for="up">등산로 입구 → 정상</label><input id="up" type="number" min="1" max="1440" step="1" value="90"><p class="help">분 단위</p></div>
+<div><label class="field-label" for="stay">정상 체류</label><input id="stay" type="number" min="0" max="600" step="1" value="20"><p class="help">분 단위</p></div>
+<div><label class="field-label" for="down">정상 → 등산 완료</label><input id="down" type="number" min="1" max="1440" step="1" value="70"><p class="help">분 단위</p></div>
+<div class="full"><label class="field-label" for="buffer">출발 여유시간</label><input id="buffer" type="number" min="0" max="300" step="1" value="15"><p class="help">교통 지연·화장실·장비 점검 등을 위한 여유시간</p></div>
 </div>
-<button class="primary" id="calc">시간 계산하기</button>
+<button class="primary" id="calc" type="button">시간 계산하기</button>
 <div class="msg" id="inputMsg" aria-live="polite"></div>
 </section>
 
@@ -70,82 +78,108 @@ footer{text-align:center;color:var(--muted);font-size:12px;margin-top:20px}
 <div style="display:flex;justify-content:space-between;font-size:13px"><span>준비 진행률</span><strong id="count">0 / 0</strong></div>
 <div class="progress"><div class="bar" id="bar"></div></div>
 <div id="list"></div>
-<div class="tools"><button class="secondary" id="all">전체 체크</button><button class="secondary" id="reset">초기화</button></div>
+<div class="tools"><button class="secondary" id="all" type="button">전체 체크</button><button class="secondary" id="reset" type="button">초기화</button></div>
 </section>
 
-<footer>입력값은 브라우저에서만 처리되며 외부 통신·로그인·민감정보 수집이 없습니다. 실제 산행 전에는 날씨, 일몰, 입산 통제와 탐방로 상태를 별도로 확인하세요.</footer>
+<section class="card" id="mountains">
+<div class="mountain-head">
+<div><h2 style="margin-bottom:5px">5. 한국 전국 명산 찾기</h2><p class="help" style="margin:0">산림청 선정 100대 명산을 앱 안에서 검색합니다.</p></div>
+<span class="badge">100대 명산</span>
+</div>
+
+<div class="filters">
+<div><label class="field-label" for="mountainSearch">산 이름·소재지 검색</label><input id="mountainSearch" type="search" placeholder="예: 북한산, 제주, 문경"></div>
+<div><label class="field-label" for="regionFilter">권역</label><select id="regionFilter"><option value="all">전국</option><option>수도권</option><option>강원</option><option>충청</option><option>전라</option><option>경상</option><option>제주</option></select></div>
+<div><label class="field-label" for="heightFilter">고도</label><select id="heightFilter"><option value="all">전체</option><option value="under700">700m 미만</option><option value="700to1200">700~1,200m</option><option value="over1200">1,200m 이상</option></select></div>
+</div>
+<div class="filters2">
+<div><label class="field-label" for="sortFilter">정렬</label><select id="sortFilter"><option value="name">가나다순</option><option value="heightDesc">높은 순</option><option value="heightAsc">낮은 순</option></select></div>
+<button class="secondary" id="resetMountainFilters" type="button" style="align-self:end">검색 초기화</button>
+</div>
+
+<div class="catalog-meta"><strong id="mountainCount">100개 산</strong><span class="muted">한 번에 12개씩 표시</span></div>
+<div class="mountain-grid" id="mountainGrid"></div>
+<button class="loadmore" id="loadMore" type="button">더 보기</button>
+<p class="source-note">자료 기준: 산림청 선정 100대 명산. 고도는 대표 봉우리 기준의 참고값이며 자료의 측정·표기 방식에 따라 소수점 차이가 있을 수 있습니다. 실제 산행 난이도와 소요시간은 출발점, 코스, 계절, 기상, 통제 여부에 따라 크게 달라지므로 별도로 확인해야 합니다. 이 명산 목록은 웹앱 내부에 정적으로 저장되어 검색 과정에서 외부 통신이 발생하지 않습니다.</p>
+</section>
+
+<footer>입력값은 브라우저에서만 처리되며 로그인·위치정보·민감정보를 수집하지 않습니다. 실제 산행 전에는 날씨, 일몰, 입산 통제, 탐방로 상태와 공식 탐방 정보를 반드시 확인하세요.</footer>
 </main>
 
 <script>
 const LEVELS={
- low:{note:"정비된 탐방로 중심의 비교적 짧은 산행",up:90,down:70,buffer:15,items:["등산화 또는 미끄럼 방지 운동화","물","간단한 간식","휴대전화","보조배터리","모자 또는 선캡","자외선 차단제","얇은 겉옷","휴지·물티슈","작은 쓰레기봉투"]},
- mid:{note:"수 시간 이상, 경사·돌길·계단 구간이 있는 산행",up:180,down:140,buffer:30,items:["등산화","물 1L 이상","행동식·간식","식사 또는 충분한 대체식","휴대전화","보조배터리","등산 스틱","모자","자외선 차단제","방풍·방수 재킷","여벌 양말","기본 구급용품","헤드랜턴","쓰레기봉투"]},
- high:{note:"장시간·급경사·험로·큰 일교차를 고려하는 산행",up:300,down:240,buffer:45,items:["접지력 좋은 등산화","충분한 물","전해질 음료 또는 보충제","고열량 행동식","식사","휴대전화","대용량 보조배터리","등산 스틱","헤드랜턴","예비 건전지 또는 충전 수단","방수·방풍 재킷","보온 레이어","여벌 양말","장갑","모자 또는 보온모","기본 구급용품","비상 보온포","호루라기","등산용 지도 또는 오프라인 경로","쓰레기봉투"]}
+low:{note:"정비된 탐방로 중심의 비교적 짧은 산행을 가정합니다.",up:90,down:70,buffer:15,items:["등산화 또는 미끄럼 방지 운동화","물","간단한 간식","휴대전화","보조배터리","모자 또는 선캡","자외선 차단제","얇은 겉옷","휴지·물티슈","작은 쓰레기봉투"]},
+mid:{note:"수 시간 이상, 경사·돌길·계단 구간이 있는 산행을 가정합니다.",up:180,down:140,buffer:30,items:["등산화","물 1L 이상","행동식·간식","식사 또는 충분한 대체식","휴대전화","보조배터리","등산 스틱","모자","자외선 차단제","방풍·방수 재킷","여벌 양말","기본 구급용품","헤드랜턴","쓰레기봉투"]},
+high:{note:"장시간·급경사·험로·큰 일교차가 예상되는 산행을 가정합니다.",up:300,down:240,buffer:45,items:["접지력 좋은 등산화","충분한 물","전해질 음료 또는 보충제","고열량 행동식","식사","휴대전화","대용량 보조배터리","등산 스틱","헤드랜턴","예비 건전지 또는 충전 수단","방수·방풍 재킷","보온 레이어","여벌 양말","장갑","모자 또는 보온모","기본 구급용품","비상 보온포","호루라기","등산용 지도 또는 오프라인 경로","쓰레기봉투"]}
 };
-let level="low";
+
+const MOUNTAINS=[{"name":"관악산","height":629,"group":"수도권","location":"서울특별시 관악구·금천구, 경기도 안양시·과천시"},{"name":"도봉산","height":740.2,"group":"수도권","location":"서울특별시 도봉구, 경기도 의정부시·양주시"},{"name":"북한산","height":835.6,"group":"수도권","location":"서울특별시 강북구·성북구·종로구·은평구, 경기도 고양시·양주시"},{"name":"금정산","height":802,"group":"경상","location":"부산광역시 금정구, 경상남도 양산시"},{"name":"비슬산","height":1083.4,"group":"경상","location":"대구광역시 달성군, 경상북도 청도군"},{"name":"마니산","height":472.1,"group":"수도권","location":"인천광역시 강화군 화도면"},{"name":"무등산","height":1187,"group":"전라","location":"광주광역시, 전라남도 담양군·화순군"},{"name":"계룡산","height":845,"group":"충청","location":"대전광역시, 충청남도 공주시·논산시"},{"name":"신불산","height":1159.3,"group":"경상","location":"울산광역시 울주군"},{"name":"가지산","height":1241,"group":"경상","location":"울산광역시 울주군, 경상북도 청도군, 경상남도 밀양시"},{"name":"명지산","height":1252.3,"group":"수도권","location":"경기도 가평군"},{"name":"화악산","height":1468.3,"group":"수도권","location":"경기도 가평군, 강원특별자치도 화천군"},{"name":"유명산","height":862,"group":"수도권","location":"경기도 가평군·양평군"},{"name":"운악산","height":934.7,"group":"수도권","location":"경기도 가평군·포천시"},{"name":"축령산","height":887,"group":"수도권","location":"경기도 남양주시·가평군"},{"name":"천마산","height":812,"group":"수도권","location":"경기도 남양주시"},{"name":"소요산","height":587.5,"group":"수도권","location":"경기도 동두천시·포천시"},{"name":"용문산","height":1157.1,"group":"수도권","location":"경기도 양평군"},{"name":"백운산(포천)","height":903,"group":"수도권","location":"경기도 포천시, 강원특별자치도 화천군"},{"name":"감악산(파주)","height":675,"group":"수도권","location":"경기도 파주시·양주시"},{"name":"명성산","height":923,"group":"수도권","location":"경기도 포천시, 강원특별자치도 철원군"},{"name":"대암산","height":1312.6,"group":"강원","location":"강원특별자치도 양구군·인제군"},{"name":"두타산","height":1357,"group":"강원","location":"강원특별자치도 동해시·삼척시"},{"name":"덕항산","height":1072.9,"group":"강원","location":"강원특별자치도 삼척시·태백시"},{"name":"응봉산","height":999.7,"group":"강원","location":"강원특별자치도 삼척시, 경상북도 울진군"},{"name":"점봉산","height":1426,"group":"강원","location":"강원특별자치도 양양군·인제군"},{"name":"백덕산","height":1350.1,"group":"강원","location":"강원특별자치도 평창군·횡성군·영월군"},{"name":"태화산","height":1027,"group":"강원","location":"강원특별자치도 영월군"},{"name":"백운산(정선)","height":883.5,"group":"강원","location":"강원특별자치도 정선군·평창군"},{"name":"치악산","height":1288,"group":"강원","location":"강원특별자치도 원주시·횡성군"},{"name":"방태산","height":1444,"group":"강원","location":"강원특별자치도 인제군"},{"name":"설악산","height":1708,"group":"강원","location":"강원특별자치도 인제군·속초시·양양군"},{"name":"가리왕산","height":1561,"group":"강원","location":"강원특별자치도 정선군·평창군"},{"name":"오봉산","height":779,"group":"강원","location":"강원특별자치도 춘천시·화천군"},{"name":"삼악산","height":655.8,"group":"강원","location":"강원특별자치도 춘천시"},{"name":"가리산","height":1051,"group":"강원","location":"강원특별자치도 춘천시·홍천군"},{"name":"태백산","height":1566.7,"group":"강원","location":"강원특별자치도 태백시, 경상북도 봉화군"},{"name":"오대산","height":1563,"group":"강원","location":"강원특별자치도 평창군·홍천군"},{"name":"공작산","height":887,"group":"강원","location":"강원특별자치도 홍천군"},{"name":"팔봉산","height":302,"group":"강원","location":"강원특별자치도 홍천군"},{"name":"계방산","height":1577,"group":"강원","location":"강원특별자치도 홍천군·평창군"},{"name":"용화산","height":877.8,"group":"강원","location":"강원특별자치도 화천군·춘천시"},{"name":"도락산","height":965.3,"group":"충청","location":"충청북도 단양군"},{"name":"민주지산","height":1242,"group":"충청","location":"충청북도 영동군, 전북특별자치도 무주군, 경상북도 김천시"},{"name":"천태산","height":714.7,"group":"충청","location":"충청북도 영동군, 충청남도 금산군"},{"name":"금수산","height":1016,"group":"충청","location":"충청북도 제천시"},{"name":"월악산","height":1095.3,"group":"충청","location":"충청북도 제천시"},{"name":"서대산","height":905.3,"group":"충청","location":"충청남도 금산군, 충청북도 옥천군"},{"name":"대둔산","height":878,"group":"충청","location":"충청남도 논산시·금산군, 전북특별자치도 완주군"},{"name":"덕숭산","height":495.2,"group":"충청","location":"충청남도 예산군"},{"name":"칠갑산","height":561,"group":"충청","location":"충청남도 청양군"},{"name":"선운산","height":336,"group":"전라","location":"전북특별자치도 고창군"},{"name":"모악산","height":793.5,"group":"전라","location":"전북특별자치도 김제시·전주시·완주군"},{"name":"지리산","height":1915,"group":"전라","location":"전북특별자치도 남원시, 전라남도 구례군, 경상남도 하동군·산청군·함양군"},{"name":"적상산","height":1030.6,"group":"전라","location":"전북특별자치도 무주군"},{"name":"덕유산","height":1614.2,"group":"전라","location":"전북특별자치도 무주군·장수군, 경상남도 거창군·함양군"},{"name":"변산","height":459,"group":"전라","location":"전북특별자치도 부안군"},{"name":"강천산","height":584,"group":"전라","location":"전북특별자치도 순창군, 전라남도 담양군"},{"name":"백암산","height":741.2,"group":"전라","location":"전북특별자치도 순창군, 전라남도 장성군"},{"name":"장안산","height":1237.4,"group":"전라","location":"전북특별자치도 장수군"},{"name":"내장산","height":763,"group":"전라","location":"전북특별자치도 정읍시·순창군"},{"name":"마이산","height":686,"group":"전라","location":"전북특별자치도 진안군"},{"name":"운장산","height":1125.8,"group":"전라","location":"전북특별자치도 진안군·완주군"},{"name":"팔영산","height":608.6,"group":"전라","location":"전라남도 고흥군"},{"name":"백운산(광양)","height":1222.2,"group":"전라","location":"전라남도 광양시·구례군"},{"name":"추월산","height":731,"group":"전라","location":"전라남도 담양군, 전북특별자치도 순창군"},{"name":"조계산","height":884,"group":"전라","location":"전라남도 순천시"},{"name":"월출산","height":810.7,"group":"전라","location":"전라남도 영암군·강진군"},{"name":"방장산","height":743,"group":"전라","location":"전라남도 장성군, 전북특별자치도 고창군"},{"name":"천관산","height":723,"group":"전라","location":"전라남도 장흥군"},{"name":"두륜산","height":700,"group":"전라","location":"전라남도 해남군"},{"name":"깃대봉(홍도)","height":368,"group":"전라","location":"전라남도 신안군 흑산면 홍도"},{"name":"남산(경주)","height":468,"group":"경상","location":"경상북도 경주시"},{"name":"금오산","height":976.5,"group":"경상","location":"경상북도 구미시·김천시·칠곡군"},{"name":"황악산","height":1111.4,"group":"경상","location":"경상북도 김천시"},{"name":"희양산","height":999,"group":"경상","location":"경상북도 문경시, 충청북도 괴산군"},{"name":"주흘산","height":1106,"group":"경상","location":"경상북도 문경시"},{"name":"대야산","height":931,"group":"경상","location":"경상북도 문경시, 충청북도 괴산군"},{"name":"황장산","height":1077,"group":"경상","location":"경상북도 문경시"},{"name":"청량산","height":870,"group":"경상","location":"경상북도 봉화군"},{"name":"속리산","height":1057.7,"group":"충청","location":"충청북도 보은군·괴산군, 경상북도 상주시"},{"name":"구병산","height":876,"group":"충청","location":"충청북도 보은군, 경상북도 상주시"},{"name":"내연산","height":711,"group":"경상","location":"경상북도 영덕군·포항시"},{"name":"소백산","height":1439.5,"group":"경상","location":"경상북도 영주시, 충청북도 단양군"},{"name":"성인봉","height":984,"group":"경상","location":"경상북도 울릉군"},{"name":"운문산","height":1195.1,"group":"경상","location":"경상북도 청도군, 경상남도 밀양시"},{"name":"주왕산","height":720.6,"group":"경상","location":"경상북도 청송군"},{"name":"팔공산","height":1192.3,"group":"경상","location":"대구광역시, 경상북도 경산시·영천시·칠곡군 등"},{"name":"금산(남해)","height":681,"group":"경상","location":"경상남도 남해군"},{"name":"무학산","height":761.4,"group":"경상","location":"경상남도 창원시"},{"name":"재약산","height":1119.1,"group":"경상","location":"경상남도 밀양시, 울산광역시 울주군"},{"name":"천성산","height":922,"group":"경상","location":"경상남도 양산시"},{"name":"연화산","height":528,"group":"경상","location":"경상남도 고성군"},{"name":"화왕산","height":756.6,"group":"경상","location":"경상남도 창녕군"},{"name":"지리산(사량도)","height":397.8,"group":"경상","location":"경상남도 통영시 사량면"},{"name":"미륵산(통영)","height":461,"group":"경상","location":"경상남도 통영시"},{"name":"황석산","height":1192.5,"group":"경상","location":"경상남도 함양군"},{"name":"황매산","height":1113,"group":"경상","location":"경상남도 합천군·산청군"},{"name":"가야산","height":1432.6,"group":"경상","location":"경상남도 합천군, 경상북도 성주군"},{"name":"한라산","height":1950,"group":"제주","location":"제주특별자치도 제주시·서귀포시"}];
+
+let level="low", selected=null, mountainLimit=12;
 const $=id=>document.getElementById(id);
 const fields={date:$("date"),summit:$("summit"),travel:$("travel"),up:$("up"),stay:$("stay"),down:$("down"),buffer:$("buffer")};
 
-function today(){
- const d=new Date(),y=d.getFullYear(),m=String(d.getMonth()+1).padStart(2,"0"),day=String(d.getDate()).padStart(2,"0");
- return `${y}-${m}-${day}`;
-}
+function today(){const d=new Date(),y=d.getFullYear(),m=String(d.getMonth()+1).padStart(2,"0"),day=String(d.getDate()).padStart(2,"0");return y+"-"+m+"-"+day}
 fields.date.value=today();
 
-function renderLevel(apply=true){
- const x=LEVELS[level]; $("levelNote").textContent=x.note;
- if(apply){fields.up.value=x.up;fields.down.value=x.down;fields.buffer.value=x.buffer}
- $("list").innerHTML=x.items.map((v,i)=>`<label class="item"><input type="checkbox" data-i="${i}"><span>${v}</span></label>`).join("");
- document.querySelectorAll("#list input").forEach(x=>x.addEventListener("change",progress));
- progress();
+function renderLevel(apply){
+const x=LEVELS[level];$("levelNote").textContent=x.note;
+if(apply){fields.up.value=x.up;fields.down.value=x.down;fields.buffer.value=x.buffer}
+$("list").innerHTML=x.items.map((v,i)=>'<label class="item"><input type="checkbox" data-i="'+i+'"><span>'+v+'</span></label>').join("");
+document.querySelectorAll("#list input").forEach(x=>x.addEventListener("change",progress));progress()
 }
-function progress(){
- const xs=[...document.querySelectorAll("#list input")],n=xs.filter(x=>x.checked).length;
- $("count").textContent=`${n} / ${xs.length}`; $("bar").style.width=(xs.length?Math.round(n/xs.length*100):0)+"%";
-}
-function mins(el,label,min,max){
- const s=el.value.trim(),v=Number(s);
- if(s==="") throw new Error(label+"을(를) 입력해 주세요.");
- if(!Number.isInteger(v)) throw new Error(label+"은(는) 정수 분 단위로 입력해 주세요.");
- if(v<min||v>max) throw new Error(label+`은(는) ${min}~${max}분 범위로 입력해 주세요.`);
- return v;
-}
-function dt(date,time){
- if(!date) throw new Error("산행 날짜를 선택해 주세요.");
- if(!/^\d{2}:\d{2}$/.test(time)) throw new Error("올바른 정상 도착시각을 입력해 주세요.");
- const [y,m,d]=date.split("-").map(Number),[h,mi]=time.split(":").map(Number);
- const x=new Date(y,m-1,d,h,mi,0,0);
- if(x.getFullYear()!=y||x.getMonth()!=m-1||x.getDate()!=d||x.getHours()!=h||x.getMinutes()!=mi) throw new Error("날짜 또는 시각 입력값을 확인해 주세요.");
- return x;
-}
+function progress(){const xs=[...document.querySelectorAll("#list input")],n=xs.filter(x=>x.checked).length;$("count").textContent=n+" / "+xs.length;$("bar").style.width=(xs.length?Math.round(n/xs.length*100):0)+"%"}
+document.querySelectorAll(".level").forEach(b=>b.addEventListener("click",()=>{document.querySelectorAll(".level").forEach(x=>x.classList.remove("active"));b.classList.add("active");level=b.dataset.level;renderLevel(true);calculate()}));
+
+function mins(el,label,min,max){const s=el.value.trim(),v=Number(s);if(s==="")throw new Error(label+"을(를) 입력해 주세요.");if(!Number.isInteger(v))throw new Error(label+"은(는) 정수 분 단위로 입력해 주세요.");if(v<min||v>max)throw new Error(label+"은(는) "+min+"~"+max+"분 범위로 입력해 주세요.");return v}
+function makeDate(date,time){if(!date)throw new Error("산행 날짜를 선택해 주세요.");if(!/^\d{2}:\d{2}$/.test(time))throw new Error("올바른 정상 도착시각을 입력해 주세요.");const a=date.split("-").map(Number),b=time.split(":").map(Number),x=new Date(a[0],a[1]-1,a[2],b[0],b[1],0,0);if(x.getFullYear()!=a[0]||x.getMonth()!=a[1]-1||x.getDate()!=a[2]||x.getHours()!=b[0]||x.getMinutes()!=b[1])throw new Error("날짜 또는 시각 입력값을 확인해 주세요.");return x}
 const add=(d,m)=>new Date(d.getTime()+m*60000);
-const t=d=>new Intl.DateTimeFormat("ko-KR",{hour:"2-digit",minute:"2-digit",hour12:false}).format(d);
-const day=d=>new Intl.DateTimeFormat("ko-KR",{month:"long",day:"numeric",weekday:"short"}).format(d);
+const fmtT=d=>new Intl.DateTimeFormat("ko-KR",{hour:"2-digit",minute:"2-digit",hour12:false}).format(d);
+const fmtD=d=>new Intl.DateTimeFormat("ko-KR",{month:"long",day:"numeric",weekday:"short"}).format(d);
 const same=(a,b)=>a.getFullYear()==b.getFullYear()&&a.getMonth()==b.getMonth()&&a.getDate()==b.getDate();
 
 function calculate(){
- try{
-  const travel=mins(fields.travel,"이동시간",0,1440),up=mins(fields.up,"등산시간",1,1440),stay=mins(fields.stay,"정상 체류시간",0,600),down=mins(fields.down,"하산시간",1,1440),buffer=mins(fields.buffer,"여유시간",0,300);
-  const summit=dt(fields.date.value,fields.summit.value),depart=add(summit,-(travel+up+buffer)),finish=add(summit,stay+down);
-  $("departT").textContent=t(depart);$("departD").textContent=day(depart);
-  $("summitT").textContent=t(summit);$("summitD").textContent=day(summit);
-  $("finishT").textContent=t(finish);$("finishD").textContent=day(finish);
-  $("inputMsg").className="msg ok";$("inputMsg").textContent="계산이 완료되었습니다.";
-  if(!same(depart,summit)&&depart<summit){$("dayMsg").className="msg warn";$("dayMsg").textContent=`⚠️ 집 출발시각이 산행일 전날입니다. ${day(depart)} ${t(depart)}에 출발해야 합니다.`;}
-  else{$("dayMsg").className="msg ok";$("dayMsg").textContent=`✓ 산행일 당일 ${t(depart)}에 집에서 출발하면 됩니다.`;}
- }catch(e){
-  $("inputMsg").className="msg err";$("inputMsg").textContent="입력 오류: "+e.message;$("dayMsg").className="msg";
-  ["departT","summitT","finishT"].forEach(id=>$(id).textContent="--:--");["departD","summitD","finishD"].forEach(id=>$(id).textContent="-");
- }
+try{
+const travel=mins(fields.travel,"이동시간",0,1440),up=mins(fields.up,"등산시간",1,1440),stay=mins(fields.stay,"정상 체류시간",0,600),down=mins(fields.down,"하산시간",1,1440),buffer=mins(fields.buffer,"여유시간",0,300);
+const summit=makeDate(fields.date.value,fields.summit.value),depart=add(summit,-(travel+up+buffer)),finish=add(summit,stay+down);
+$("departT").textContent=fmtT(depart);$("departD").textContent=fmtD(depart);$("summitT").textContent=fmtT(summit);$("summitD").textContent=fmtD(summit);$("finishT").textContent=fmtT(finish);$("finishD").textContent=fmtD(finish);
+$("inputMsg").className="msg ok";$("inputMsg").textContent="계산이 완료되었습니다.";
+if(!same(depart,summit)&&depart<summit){$("dayMsg").className="msg warn";$("dayMsg").textContent="⚠️ 집 출발시각이 산행일 전날입니다. "+fmtD(depart)+" "+fmtT(depart)+"에 출발해야 합니다."}else{$("dayMsg").className="msg ok";$("dayMsg").textContent="✓ 산행일 당일 "+fmtT(depart)+"에 집에서 출발하면 됩니다."}
+}catch(e){$("inputMsg").className="msg err";$("inputMsg").textContent="입력 오류: "+e.message;$("dayMsg").className="msg";["departT","summitT","finishT"].forEach(id=>$(id).textContent="--:--");["departD","summitD","finishD"].forEach(id=>$(id).textContent="-")}
 }
-document.querySelectorAll(".level").forEach(b=>b.addEventListener("click",()=>{
- document.querySelectorAll(".level").forEach(x=>x.classList.remove("active"));b.classList.add("active");level=b.dataset.level;renderLevel(true);calculate();
-}));
-$("calc").addEventListener("click",calculate);
-$("all").addEventListener("click",()=>{document.querySelectorAll("#list input").forEach(x=>x.checked=true);progress()});
-$("reset").addEventListener("click",()=>{document.querySelectorAll("#list input").forEach(x=>x.checked=false);progress()});
-Object.values(fields).forEach(x=>x.addEventListener("change",calculate));
-renderLevel(true);calculate();
+$("calc").addEventListener("click",calculate);$("all").addEventListener("click",()=>{document.querySelectorAll("#list input").forEach(x=>x.checked=true);progress()});$("reset").addEventListener("click",()=>{document.querySelectorAll("#list input").forEach(x=>x.checked=false);progress()});Object.values(fields).forEach(x=>x.addEventListener("change",calculate));
+
+function altitudeLabel(h){if(h<700)return "700m 미만";if(h<1200)return "700~1,200m";return "1,200m 이상"}
+function filteredMountains(){
+const q=$("mountainSearch").value.trim().toLowerCase(),region=$("regionFilter").value,hf=$("heightFilter").value,sort=$("sortFilter").value;
+let rows=MOUNTAINS.filter(m=>{
+const text=(m.name+" "+m.location+" "+m.group).toLowerCase();
+if(q&&!text.includes(q))return false;if(region!=="all"&&m.group!==region)return false;
+if(hf==="under700"&&m.height>=700)return false;if(hf==="700to1200"&&(m.height<700||m.height>=1200))return false;if(hf==="over1200"&&m.height<1200)return false;return true
+});
+rows=rows.slice();
+if(sort==="heightDesc")rows.sort((a,b)=>b.height-a.height);else if(sort==="heightAsc")rows.sort((a,b)=>a.height-b.height);else rows.sort((a,b)=>a.name.localeCompare(b.name,"ko"));
+return rows
+}
+function escapeHtml(v){return String(v).replace(/[&<>"']/g,s=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[s]))}
+function renderMountains(){
+const rows=filteredMountains(),shown=rows.slice(0,mountainLimit);$("mountainCount").textContent=rows.length+"개 산";
+if(!shown.length){$("mountainGrid").innerHTML='<div class="empty">조건에 맞는 산이 없습니다. 검색어 또는 필터를 바꿔 보세요.</div>'; $("loadMore").style.display="none";return}
+$("mountainGrid").innerHTML=shown.map((m,i)=>'<article class="mountain"><div class="mountain-top"><h3>'+escapeHtml(m.name)+'</h3><span class="height">'+Number(m.height).toLocaleString("ko-KR")+"m</span></div><p class="place">"+escapeHtml(m.location)+'</p><div class="mountain-tags"><span class="tag">'+m.group+'</span><span class="tag">'+altitudeLabel(m.height)+'</span></div><button class="choose" type="button" data-name="'+escapeHtml(m.name)+'">산행 계획에 선택</button></article>').join("");
+document.querySelectorAll(".choose").forEach(btn=>btn.addEventListener("click",()=>chooseMountain(btn.dataset.name)));
+$("loadMore").style.display=rows.length>mountainLimit?"block":"none"
+}
+function chooseMountain(name){
+selected=MOUNTAINS.find(m=>m.name===name)||null;if(!selected)return;
+$("selectedName").textContent="선택한 산: "+selected.name;$("selectedMeta").textContent=Number(selected.height).toLocaleString("ko-KR")+"m · "+selected.location;$("selectedMountain").classList.add("show");
+$("planner").scrollIntoView({behavior:"smooth",block:"start"})
+}
+$("clearMountain").addEventListener("click",()=>{selected=null;$("selectedMountain").classList.remove("show")});
+["mountainSearch","regionFilter","heightFilter","sortFilter"].forEach(id=>$(id).addEventListener(id==="mountainSearch"?"input":"change",()=>{mountainLimit=12;renderMountains()}));
+$("resetMountainFilters").addEventListener("click",()=>{$("mountainSearch").value="";$("regionFilter").value="all";$("heightFilter").value="all";$("sortFilter").value="name";mountainLimit=12;renderMountains()});
+$("loadMore").addEventListener("click",()=>{mountainLimit+=12;renderMountains()});
+
+renderLevel(true);calculate();renderMountains();
 </script>
 </body>
 </html>
