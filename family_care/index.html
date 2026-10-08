@@ -2,7 +2,7 @@
 <html lang="ko">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#315a4b">
 <title>우리 가족 돌봄 보드</title>
 <style>
@@ -14,8 +14,8 @@
 }
 *{box-sizing:border-box}
 html{scroll-behavior:smooth}
-body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Noto Sans KR","Segoe UI",sans-serif}
-main{max-width:860px;margin:auto;padding:18px 14px 42px}
+body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Noto Sans KR","Segoe UI",sans-serif;overflow-x:hidden;-webkit-text-size-adjust:100%}
+main{max-width:860px;margin:auto;padding:18px 14px calc(42px + env(safe-area-inset-bottom))}
 header{padding:6px 4px 10px}
 h1{font-size:clamp(27px,7vw,36px);letter-spacing:-.045em;margin:4px 0 8px}
 h2{font-size:19px;letter-spacing:-.03em;margin:0 0 14px}
@@ -29,25 +29,25 @@ p{line-height:1.6}
 .full{grid-column:1/-1}
 label.field{display:block;font-size:13px;font-weight:800;margin-bottom:6px}
 input,select,textarea{width:100%;border:1px solid #cdd8d1;border-radius:12px;background:#fff;color:var(--text);font:inherit;padding:11px 12px}
-input,select{min-height:46px}
+input,select{min-height:48px}
 textarea{min-height:90px;resize:vertical}
 input:focus,select:focus,textarea:focus{outline:3px solid rgba(49,90,75,.12);border-color:var(--green)}
 .help{font-size:12px;margin:5px 0 0}
 .section-note{font-size:12px;color:var(--muted);margin:-5px 0 12px}
 .chips{display:flex;flex-wrap:wrap;gap:8px}
-.chip{border:1px solid var(--line);background:#fff;border-radius:999px;padding:9px 12px;font-weight:750;font-size:13px;color:var(--text)}
+.chip{border:1px solid var(--line);background:#fff;border-radius:999px;padding:10px 13px;min-height:44px;font-weight:750;font-size:13px;color:var(--text);touch-action:manipulation}
 .chip.active{background:var(--green);border-color:var(--green);color:#fff}
 .status-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
 .status-box{border:1px solid var(--line);border-radius:14px;padding:12px;background:#fff}
 .status-box strong{display:block;font-size:13px;margin-bottom:8px}
 .toggle-list{display:grid;gap:7px}
-.toggle{display:flex;align-items:flex-start;gap:9px;border:1px solid var(--line);border-radius:12px;padding:10px 11px;font-size:13px;cursor:pointer}
-.toggle input{width:19px;height:19px;min-height:19px;margin:0;accent-color:var(--green);flex:0 0 auto}
-.primary{width:100%;border:0;border-radius:13px;padding:14px 16px;background:var(--green);color:#fff;font:inherit;font-weight:850;cursor:pointer;margin-top:14px}
+.toggle{display:flex;align-items:flex-start;gap:11px;border:1px solid var(--line);border-radius:12px;padding:12px 12px;min-height:48px;font-size:13px;cursor:pointer;touch-action:manipulation}
+.toggle input{width:22px;height:22px;min-height:22px;margin:0;accent-color:var(--green);flex:0 0 auto}
+.primary{width:100%;min-height:52px;border:0;border-radius:13px;padding:14px 16px;background:var(--green);color:#fff;font:inherit;font-weight:850;cursor:pointer;margin-top:14px;touch-action:manipulation}
 .primary:hover{background:var(--green2)}
-.secondary{border:1px solid var(--line);background:#fff;color:var(--text);border-radius:11px;padding:10px 12px;font:inherit;font-weight:750;cursor:pointer}
+.secondary{border:1px solid var(--line);background:#fff;color:var(--text);border-radius:11px;padding:10px 12px;min-height:44px;font:inherit;font-weight:750;cursor:pointer;touch-action:manipulation}
 .secondary:hover{background:#f8faf8}
-.danger-btn{border:1px solid #e7caca;background:#fff7f7;color:#8e3030;border-radius:11px;padding:10px 12px;font:inherit;font-weight:750;cursor:pointer}
+.danger-btn{border:1px solid #e7caca;background:#fff7f7;color:#8e3030;border-radius:11px;padding:10px 12px;min-height:44px;font:inherit;font-weight:750;cursor:pointer;touch-action:manipulation}
 .msg{display:none;margin-top:12px;padding:11px 13px;border-radius:12px;font-size:13px;line-height:1.55}
 .msg.show{display:block}.msg.ok{background:var(--soft)}.msg.err{background:var(--danger);color:var(--dangerText)}
 .summary-strip{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px}
@@ -58,18 +58,18 @@ input:focus,select:focus,textarea:focus{outline:3px solid rgba(49,90,75,.12);bor
 .toolbar{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0 12px}
 .toolbar select{width:auto;min-width:120px;flex:1}
 .task-list{display:grid;gap:9px}
-.task{border:1px solid var(--line);border-radius:14px;padding:12px;background:#fff}
+.task{border:1px solid var(--line);border-radius:14px;padding:13px;background:#fff}
 .task.done{opacity:.62;background:#fafbfa}
-.task-main{display:flex;gap:10px;align-items:flex-start}
-.task-main input[type=checkbox]{width:21px;height:21px;min-height:21px;margin:1px 0 0;accent-color:var(--green);flex:0 0 auto}
-.task-title{font-weight:800;font-size:14px;line-height:1.5}
+.task-main{display:flex;gap:11px;align-items:flex-start;cursor:pointer;touch-action:manipulation}
+.task-main input[type=checkbox]{width:24px;height:24px;min-height:24px;margin:0;accent-color:var(--green);flex:0 0 auto}
+.task-title{font-weight:800;font-size:14px;line-height:1.6;padding-top:1px}
 .task.done .task-title{text-decoration:line-through}
-.task-meta{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0 0 31px}
+.task-meta{display:flex;flex-wrap:wrap;gap:6px;margin:9px 0 0 35px}
 .tag{font-size:11px;border-radius:999px;padding:4px 7px;background:#f1f4f2;color:#57645d}
 .tag.med{background:#eef3fb;color:#405d85}.tag.custom{background:#fff2df;color:#805715}.tag.safety{background:#fff0f0;color:#923939}
-.task-controls{display:grid;grid-template-columns:1fr 1fr auto;gap:7px;margin:9px 0 0 31px}
-.task-controls select{min-height:36px;padding:7px 8px;font-size:12px}
-.icon-btn{border:1px solid var(--line);background:#fff;border-radius:9px;padding:7px 9px;font-size:12px;cursor:pointer}
+.task-controls{display:grid;grid-template-columns:1fr 1fr auto;gap:8px;margin:10px 0 0 35px}
+.task-control-field{display:block}.task-control-field span{display:block;font-size:11px;font-weight:750;color:var(--muted);margin:0 0 4px 2px}.task-controls select{min-height:42px;padding:8px 9px;font-size:13px}
+.icon-btn{border:1px solid var(--line);background:#fff;border-radius:9px;padding:8px 11px;min-height:42px;align-self:end;font-size:12px;cursor:pointer;touch-action:manipulation}
 .empty{text-align:center;color:var(--muted);border:1px dashed var(--line);border-radius:13px;padding:24px 10px}
 .add-box{background:#fafcfb;border:1px solid var(--line);border-radius:14px;padding:13px;margin-top:13px}
 .add-grid{display:grid;grid-template-columns:2fr 1fr 1fr;gap:8px}
@@ -82,9 +82,51 @@ input:focus,select:focus,textarea:focus{outline:3px solid rgba(49,90,75,.12);bor
 .disclaimer{font-size:12px;color:var(--muted);line-height:1.65;margin:12px 0 0}
 footer{text-align:center;color:var(--muted);font-size:12px;line-height:1.6;padding:22px 5px 0}
 @media(max-width:650px){
-  .grid,.status-grid,.summary-strip,.add-grid,.task-controls{grid-template-columns:1fr}
+  main{padding:12px 10px calc(32px + env(safe-area-inset-bottom))}
+  header{padding:4px 4px 8px}
+  h1{font-size:28px;line-height:1.18;margin-top:2px}
+  h2{font-size:18px;line-height:1.35;margin-bottom:12px}
+  .sub{font-size:14px;line-height:1.55}
+  .banner{font-size:12.5px;padding:11px 12px}
+  .card{padding:15px 13px;border-radius:16px;margin-top:11px;box-shadow:0 5px 18px rgba(36,70,57,.055)}
+  .grid,.status-grid,.add-grid{grid-template-columns:1fr;gap:10px}
   .full{grid-column:auto}
-  .task-controls{margin-left:31px}
+  label.field{font-size:14px;margin-bottom:7px}
+  input,select,textarea{font-size:16px;border-radius:11px}
+  input,select{min-height:52px;padding:12px}
+  textarea{min-height:112px}
+  .status-box{padding:12px}
+  .status-box strong{font-size:14px}
+  .toggle{font-size:14px;line-height:1.45;padding:13px 12px}
+  .toggle input{width:24px;height:24px;min-height:24px}
+  .chips{gap:7px}
+  .chip{font-size:14px;min-height:46px;padding:10px 14px}
+  .primary{min-height:54px;font-size:16px}
+  .summary-strip{grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:12px}
+  .stat{padding:10px 8px;text-align:center}
+  .stat small{font-size:11px}.stat strong{font-size:20px}
+  .progress{height:10px}
+  .toolbar{display:grid;grid-template-columns:1fr;gap:8px}
+  .toolbar select,.toolbar .secondary{width:100%;min-width:0;min-height:50px;font-size:15px}
+  .task-list{gap:10px}
+  .task{padding:14px 12px;border-radius:14px}
+  .task-main input[type=checkbox]{width:26px;height:26px;min-height:26px}
+  .task-title{font-size:15px;line-height:1.6}
+  .task-meta{margin-left:37px;gap:5px}
+  .tag{font-size:11.5px;padding:5px 8px}
+  .task-controls{grid-template-columns:1fr 1fr;margin:12px 0 0 37px;gap:8px}
+  .task-controls .delete-task{grid-column:1/-1;width:100%;min-height:44px}
+  .task-control-field span{font-size:12px}
+  .task-controls select{width:100%;min-height:46px;font-size:14px}
+  .add-box{padding:13px 11px}
+  .add-grid{gap:8px}
+  #addTaskBtn{min-height:50px;font-size:15px}
+  .handoff-box{font-size:14px;line-height:1.7;padding:13px}
+  .actions{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+  .actions .secondary,.actions .danger-btn{width:100%;min-height:48px}
+  .actions .danger-btn{grid-column:1/-1}
+  .alert-list{font-size:14px;line-height:1.75;padding-left:20px}
+  .disclaimer{font-size:13px}
 }
 @media print{
   body{background:#fff}.primary,.secondary,.danger-btn,.toolbar,.add-box,.actions,.chip,#privacyBanner{display:none!important}
@@ -492,19 +534,19 @@ function renderTasks(){
   }else{
     $("taskList").innerHTML=visible.map(t=>`
       <article class="task ${t.done?"done":""}" data-id="${t.id}">
-        <div class="task-main">
+        <label class="task-main">
           <input type="checkbox" class="task-check" ${t.done?"checked":""} aria-label="완료 체크">
-          <div class="task-title">${escapeHtml(t.text)}</div>
-        </div>
+          <span class="task-title">${escapeHtml(t.text)}</span>
+        </label>
         <div class="task-meta">
           <span class="tag ${t.source==="medical"?"med":t.source==="custom"?"custom":t.source==="safety"?"safety":""}">${escapeHtml(t.category)}</span>
           <span class="tag">${escapeHtml(t.freq)}</span>
           <span class="tag">담당: ${escapeHtml(t.owner)}</span>
         </div>
         <div class="task-controls">
-          <select class="owner-select" aria-label="담당자">${OWNER_OPTIONS.map(x=>`<option ${x===t.owner?"selected":""}>${x}</option>`).join("")}</select>
-          <select class="freq-select" aria-label="빈도">${FREQ_OPTIONS.map(x=>`<option ${x===t.freq?"selected":""}>${x}</option>`).join("")}</select>
-          <button class="icon-btn delete-task" type="button">삭제</button>
+          <label class="task-control-field"><span>담당자</span><select class="owner-select" aria-label="담당자">${OWNER_OPTIONS.map(x=>`<option ${x===t.owner?"selected":""}>${x}</option>`).join("")}</select></label>
+          <label class="task-control-field"><span>빈도</span><select class="freq-select" aria-label="빈도">${FREQ_OPTIONS.map(x=>`<option ${x===t.freq?"selected":""}>${x}</option>`).join("")}</select></label>
+          <button class="icon-btn delete-task" type="button">이 할 일 삭제</button>
         </div>
       </article>`).join("");
 
